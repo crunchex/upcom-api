@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:bootjack/bootjack.dart';
 
-import '../mailbox.dart';
+import '../mailbox/mailbox.dart';
 
 part 'unsaved.dart';
 part 'saved.dart';

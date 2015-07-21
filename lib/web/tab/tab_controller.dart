@@ -3,9 +3,9 @@ library tab_controller;
 import 'dart:html';
 import 'dart:async';
 
-import '../mailbox.dart';
-import '../container_view.dart';
-import '../context_menu.dart';
+import '../mailbox/mailbox.dart';
+import '../tab/container_view.dart';
+import '../menu/context_menu.dart';
 
 part 'tab_view.dart';
 

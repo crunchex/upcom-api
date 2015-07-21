@@ -9,6 +9,18 @@ packages:
     description: args
     source: hosted
     version: "0.13.2"
+  bootjack:
+    description: bootjack
+    source: hosted
+    version: "0.6.5+3"
+  browser:
+    description: browser
+    source: hosted
+    version: "0.10.0+2"
+  dquery:
+    description: dquery
+    source: hosted
+    version: "0.7.1"
   intl:
     description: intl
     source: hosted
