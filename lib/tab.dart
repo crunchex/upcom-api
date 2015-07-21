@@ -1,7 +1,6 @@
 library tab;
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 
 import 'updroid_message.dart';

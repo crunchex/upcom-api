@@ -1,6 +1,5 @@
 library tab_mailbox;
 
-import 'dart:io';
 import 'dart:async';
 import 'dart:isolate';
 
