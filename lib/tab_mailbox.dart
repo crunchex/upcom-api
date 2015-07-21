@@ -12,6 +12,7 @@ class TabMailbox {
   StreamController receiveStream;
 
   Map _registry;
+  Map _endpointRegistry;
   SendPort _sendPort;
 
   TabMailbox(SendPort sendPort) {
@@ -19,8 +20,14 @@ class TabMailbox {
     _sendPort = sendPort;
 
     _registry = {};
+    _endpointRegistry = {};
 
     receiveStream.stream.transform(Msg.toMsg).listen((Msg m) {
+      if (_endpointRegistry.containsKey(m.header)) {
+        _endpointRegistry[m.header](m.header, m.body);
+        return;
+      }
+
       _registry[m.header](m.body);
     });
   }
@@ -40,8 +47,8 @@ class TabMailbox {
     _registry[header] = function;
   }
 
-  void registerEndPointHandler(String endpoint, function(String s)) {
+  void registerEndPointHandler(String endpoint, function(String endpoint, String data)) {
     _sendPort.send('c:REG_ENDPOINT:/c:$endpoint');
-    _registry[endpoint] = function;
+    _endpointRegistry[endpoint] = function;
   }
 }
