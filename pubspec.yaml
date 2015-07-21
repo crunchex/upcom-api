@@ -1,0 +1,12 @@
+name: upcom-api
+version: 0.1.0
+authors:
+- Mike Lewis <mike@updroid.com>
+description: API for building UpDroid Commander applications.
+homepage: https://www.updroid.com/upcom
+environment:
+  sdk: '>=1.9.3 <2.0.0'
+dependencies:
+  logging: any
+  logging_handlers: any
+  xml: any
