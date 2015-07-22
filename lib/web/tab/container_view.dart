@@ -82,11 +82,12 @@ abstract class ContainerView {
 
   /// Takes a [num], [col], and [title] to add a new tab for the specified column.
   void _setUpTabHandle(DivElement handles) {
+    String name = title.toLowerCase().replaceAll(' ', '-');
+
     tabHandle = new LIElement()
+      ..id = 'tab-$name-$id-handle'
       ..classes.add('tab-handle')
       ..classes.add('active');
-
-    String name = title.toLowerCase().replaceAll(' ', '-');
 
     tabHandleButton = new AnchorElement()
         ..id = 'button-$name-$id'
@@ -120,6 +121,7 @@ abstract class ContainerView {
     }
 
     tabContent = new DivElement()
+        ..id = 'tab-$name-$id-content'
         ..classes.add('tab-content')
         ..tabIndex = -1;
     tabContainer.children.add(tabContent);
