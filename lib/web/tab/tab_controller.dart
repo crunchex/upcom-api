@@ -18,12 +18,12 @@ abstract class TabController {
   Mailbox mailbox;
   AnchorElement _closeTabButton;
 
-  TabController(this.id, this.col, this.fullName, this.shortName, List menuConfig, [bool externalCss=false]) {
+  TabController(this.id, this.col, this.fullName, this.shortName, List menuConfig, [String externalCssPath]) {
     mailbox = new Mailbox(fullName, id);
 
     registerMailbox();
 
-    TabView.createTabView(id, col, fullName, shortName, menuConfig, externalCss).then((tabView) {
+    TabView.createTabView(id, col, fullName, shortName, menuConfig, externalCssPath).then((tabView) {
       view = tabView;
 
       _closeTabButton = view.refMap['close-tab'];
