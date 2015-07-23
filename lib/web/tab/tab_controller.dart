@@ -30,20 +30,16 @@ abstract class TabController {
   }
 
   Future _getId() {
-    Completer c = new Completer();
-
     EventStreamProvider<CustomEvent> tabIdStream = new EventStreamProvider<CustomEvent>('TabIdEvent');
-    tabIdStream.forTarget(window).where((CustomEvent e) {
+    return tabIdStream.forTarget(window)
+    .where((CustomEvent e) {
       Map detail = JSON.decode(e.detail);
       return fullName == detail['className'];
     }).first.then((e) {
       Map detail = JSON.decode(e.detail);
       id = detail['id'];
       col = detail['col'];
-      c.complete();
     });
-
-    return c.future;
   }
 
   Future _setupTab(List menuConfig, [String externalCssPath]) async {
@@ -71,6 +67,12 @@ abstract class TabController {
     // (which may or may not be the direct child of view.content).
     // Also, this is done last as additional view set up may have been done in setUpController().
     view.tabContent.onFocus.listen((e) => elementToFocus.focus());
+
+    String detail = fullName;
+    CustomEvent event = new CustomEvent('TabSetupComplete', canBubble: false, cancelable: false, detail: detail);
+    window.dispatchEvent(event);
+
+    return null;
   }
 
   void makeActive() => view.makeActive();
@@ -83,16 +85,18 @@ abstract class TabController {
   void cleanUp();
   Element get elementToFocus;
 
-  Future _closeTab() async {
+  Future<bool> _closeTab() async {
     // Cancel closing if preClose returns false for some reason.
     bool canClose = await preClose();
-    if (!canClose) return new Future.value(true);
+    if (!canClose) return false;
 
     view.destroy();
     cleanUp();
 
     UpDroidMessage um = new UpDroidMessage('CLOSE_TAB', '${fullName}_$id');
     mailbox.ws.send(um.s);
+
+    return true;
   }
 
   void _cloneTab() => mailbox.ws.send('[[CLONE_TAB]]' + '${fullName}_${id}_$col');
