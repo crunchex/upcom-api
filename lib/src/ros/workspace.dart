@@ -1,4 +1,11 @@
-part of ros;
+library workspace;
+
+import 'dart:io';
+import 'dart:async';
+
+import 'package:xml/xml.dart';
+
+import '../debug/server_helper.dart' as help;
 
 /// A representation of a ROS catkin workspace (as of Indigo).
 ///
