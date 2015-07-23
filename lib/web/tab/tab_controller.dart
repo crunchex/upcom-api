@@ -20,45 +20,57 @@ abstract class TabController {
   AnchorElement _closeTabButton;
 
   TabController(this.fullName, this.shortName, List menuConfig, [String externalCssPath]) {
-    // Listen for CustomEvents called CustomDartEvent.
+    // Wait an ID event before we continue with the setup.
+    _getId().then((_) => _setupTab(menuConfig, externalCssPath));
+
+    // Let UpCom know that we are ready for ID.
+    String detail = fullName;
+    CustomEvent event = new CustomEvent('TabReadyForId', canBubble: false, cancelable: false, detail: detail);
+    window.dispatchEvent(event);
+  }
+
+  Future _getId() {
+    Completer c = new Completer();
+
     EventStreamProvider<CustomEvent> tabIdStream = new EventStreamProvider<CustomEvent>('TabIdEvent');
-    tabIdStream.forTarget(window).first.then((CustomEvent e) {
+    tabIdStream.forTarget(window).where((CustomEvent e) {
+      Map detail = JSON.decode(e.detail);
+      return fullName == detail['className'];
+    }).first.then((e) {
       Map detail = JSON.decode(e.detail);
       id = detail['id'];
       col = detail['col'];
-
-      mailbox = new Mailbox(fullName, id);
-
-      registerMailbox();
-
-      TabView.createTabView(id, col, fullName, shortName, menuConfig, externalCssPath).then((tabView) {
-        view = tabView;
-
-        _closeTabButton = view.refMap['close-tab'];
-        _closeTabButton.onClick.listen((e) => _closeTab());
-        view.closeControlHitbox.onClick.listen((e) => _closeTab());
-
-        view.tabHandleButton.onContextMenu.listen((e) {
-          e.preventDefault();
-          List menu = [
-            {'type': 'toggle', 'title': 'Clone', 'handler': _cloneTab},
-            {'type': 'toggle', 'title': 'Move ${col == 1 ? 'Right' : 'Left'}', 'handler': () => _moveTabTo(col == 1 ? 2 : 1)}];
-          ContextMenu.createContextMenu(e.page, menu);
-        });
-
-        setUpController();
-        registerEventHandlers();
-
-        // When the content of this tab receives focus, transfer it to whatever is the main content of the tab
-        // (which may or may not be the direct child of view.content).
-        // Also, this is done last as additional view set up may have been done in setUpController().
-        view.tabContent.onFocus.listen((e) => elementToFocus.focus());
-      });
+      c.complete();
     });
 
-    // Let UpCom know that we are ready for ID.
-    CustomEvent event = new CustomEvent('TabReadyForId', canBubble: false, cancelable: false);
-    window.dispatchEvent(event);
+    return c.future;
+  }
+
+  Future _setupTab(List menuConfig, [String externalCssPath]) async {
+    mailbox = new Mailbox(fullName, id);
+    registerMailbox();
+
+    view = await TabView.createTabView(id, col, fullName, shortName, menuConfig, externalCssPath);
+
+    _closeTabButton = view.refMap['close-tab'];
+    _closeTabButton.onClick.listen((e) => _closeTab());
+    view.closeControlHitbox.onClick.listen((e) => _closeTab());
+
+    view.tabHandleButton.onContextMenu.listen((e) {
+      e.preventDefault();
+      List menu = [
+        {'type': 'toggle', 'title': 'Clone', 'handler': _cloneTab},
+        {'type': 'toggle', 'title': 'Move ${col == 1 ? 'Right' : 'Left'}', 'handler': () => _moveTabTo(col == 1 ? 2 : 1)}];
+      ContextMenu.createContextMenu(e.page, menu);
+    });
+
+    setUpController();
+    registerEventHandlers();
+
+    // When the content of this tab receives focus, transfer it to whatever is the main content of the tab
+    // (which may or may not be the direct child of view.content).
+    // Also, this is done last as additional view set up may have been done in setUpController().
+    view.tabContent.onFocus.listen((e) => elementToFocus.focus());
   }
 
   void makeActive() => view.makeActive();
