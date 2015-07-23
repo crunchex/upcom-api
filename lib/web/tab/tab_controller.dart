@@ -61,6 +61,8 @@ abstract class TabController {
     });
 
     setUpController();
+
+    mailbox.registerWebSocketEvent(EventType.ON_MESSAGE, 'UPDATE_COLUMN', _updateColumn);
     registerEventHandlers();
 
     // When the content of this tab receives focus, transfer it to whatever is the main content of the tab
@@ -101,4 +103,9 @@ abstract class TabController {
 
   void _cloneTab() => mailbox.ws.send('[[CLONE_TAB]]' + '${fullName}_${id}_$col');
   void _moveTabTo(int newCol) => mailbox.ws.send('[[MOVE_TAB]]' + '${fullName}_${id}_${col}_$newCol');
+
+  void _updateColumn(UpDroidMessage um) {
+    col = int.parse(um.body);
+    view.col = int.parse(um.body);
+  }
 }

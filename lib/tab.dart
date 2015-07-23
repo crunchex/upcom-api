@@ -34,6 +34,7 @@ abstract class Tab {
     mailbox.registerMessageHandler('CLOSE_TAB', _closeTab);
     mailbox.registerMessageHandler('CLONE_TAB', _cloneTab);
     mailbox.registerMessageHandler('MOVE_TAB', _moveTab);
+    mailbox.registerMessageHandler('UPDATE_COLUMN', _updateColumn);
 
     // Register subclass' event handlers.
     registerMailbox();
@@ -59,5 +60,9 @@ abstract class Tab {
   void _moveTab(String msg) {
     Msg m = new Msg('MOVE_TAB', msg);
     mailbox.relay(new ServerMessage('UpDroidClient', -1, m));
+  }
+
+  void _updateColumn(String msg) {
+    mailbox.send(new Msg('UPDATE_COLUMN', msg));
   }
 }
