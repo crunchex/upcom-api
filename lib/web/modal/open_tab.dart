@@ -2,9 +2,11 @@ part of updroid_modal;
 
 class UpDroidOpenTabModal extends UpDroidModal {
   Function _openTab;
+  Map _tabsInfo;
 
-  UpDroidOpenTabModal(Function openTab) {
+  UpDroidOpenTabModal(Function openTab, Map tabsInfo) {
     _openTab = openTab;
+    _tabsInfo = tabsInfo;
 
     _setupHead('Select Tab: ');
     _setupBody();
@@ -18,11 +20,10 @@ class UpDroidOpenTabModal extends UpDroidModal {
       ..id = "selector-wrapper";
     _modalBody.children.add(selectorWrap);
 
-    ButtonElement sEditor = _createButton('default', 'Editor')..onClick.listen((_) => _openTab('UpDroidEditor'));
-    ButtonElement sConsole = _createButton('default', 'Console')..onClick.listen((_) => _openTab('UpDroidConsole'));
-    ButtonElement sCamera = _createButton('default', 'Camera')..onClick.listen((_) => _openTab('UpDroidCamera'));
-    ButtonElement sTeleop = _createButton('default', 'Teleop')..onClick.listen((_) => _openTab('UpDroidTeleop'));
-    selectorWrap.children.addAll([sEditor, sConsole, sCamera, sTeleop]);
+    _tabsInfo.values.forEach((Map tabInfo) {
+      ButtonElement tabButton = _createButton('default', tabInfo['fullName'])..onClick.listen((_) => _openTab(tabInfo));
+      selectorWrap.children.add(tabButton);
+    });
   }
 
   void _setupFooter() {
