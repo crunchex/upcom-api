@@ -1,4 +1,4 @@
-library git;
+library git_main;
 
 import 'dart:io';
 import 'dart:convert';
