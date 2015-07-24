@@ -4,8 +4,8 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:convert';
 
+import 'container_view.dart';
 import '../mailbox/mailbox.dart';
-import '../tab/container_view.dart';
 import '../menu/context_menu.dart';
 
 part 'tab_view.dart';
