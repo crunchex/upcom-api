@@ -58,25 +58,26 @@ abstract class ContainerView {
   }
 
   LIElement addMenuItem(Map itemConfig, [String dropdownMenuSelector]) {
+    String type = itemConfig['type'];
+    String title = itemConfig['title'];
+    String handler = itemConfig['handler'];
+    var args = itemConfig['args'];
+    List<String> items = itemConfig['items'];
+
     LIElement itemElement;
-    if (itemConfig['type'] == 'toggle') {
-      if (itemConfig.containsKey('handler')) {
-        if (itemConfig.containsKey('args')) {
-          itemElement = _createToggleItem(
-              itemConfig['title'], itemConfig['handler'], itemConfig['args']);
-        } else {
-          itemElement =
-              _createToggleItem(itemConfig['title'], itemConfig['handler']);
-        }
-      } else {
-        itemElement = _createToggleItem(itemConfig['title']);
-      }
-    } else if (itemConfig['type'] == 'input') {
-      itemElement = _createInputItem(itemConfig['title']);
-    } else if (itemConfig['type'] == 'submenu') {
-      itemElement = _createSubMenu(itemConfig['title'], itemConfig['items']);
-    } else if (itemConfig['type'] == 'divider') {
-      itemElement = _createDivider(itemConfig['title']);
+    switch (type) {
+      case 'toggle':
+        itemElement = _createToggleItem(title, handler, args);
+        break;
+      case 'input':
+        itemElement = _createInputItem(title);
+        break;
+      case 'submenu':
+        itemElement = _createSubMenu(title, items);
+        break;
+      case 'divider':
+        itemElement = _createDivider(title);
+        break;
     }
 
     if (dropdownMenuSelector != null) {
@@ -243,7 +244,7 @@ abstract class ContainerView {
   }
 
   /// Generates a toggle item (button) and returns the new [LIElement].
-  LIElement _createToggleItem(String title, [onClick, args]) {
+  LIElement _createToggleItem(String title, onClick, args) {
     String sanitizedTitle =
         title.toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
 
@@ -253,15 +254,11 @@ abstract class ContainerView {
       ..href = '#'
       ..attributes['role'] = 'button'
       ..text = title;
+
     if (onClick != null) {
-      button.onClick.listen((e) {
-        if (args != null) {
-          onClick(args);
-        } else {
-          onClick();
-        }
-      });
+      button.onClick.listen((e) => args != null ? onClick(args) : onClick());
     }
+
     buttonList.children.add(button);
     refMap[sanitizedTitle] = button;
 
