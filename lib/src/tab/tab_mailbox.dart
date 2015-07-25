@@ -11,14 +11,14 @@ class TabMailbox {
   StreamController receiveStream;
 
   SendPort _sendPort;
-  String _tabName;
+  String _refName;
   int _id;
   Map _registry, _endpointRegistry;
 
-  TabMailbox(SendPort sendPort, String tabName, int id) {
+  TabMailbox(SendPort sendPort, String refName, int id) {
     receiveStream = new StreamController();
     _sendPort = sendPort;
-    _tabName = tabName;
+    _refName = refName;
     _id = id;
 
     _registry = {};
@@ -42,7 +42,7 @@ class TabMailbox {
 
   /// Sends out a [ServerMessage] to be send out of the Isolate and routed through [CmdrPostOffice].
   void relay(String receiver, int id, Msg m) {
-    ServerMessage sm = new ServerMessage(_tabName, _id, receiver, id, m);
+    ServerMessage sm = new ServerMessage(_refName, _id, receiver, id, m);
     _sendPort.send(sm.toString());
   }
 

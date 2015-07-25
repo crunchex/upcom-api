@@ -8,6 +8,8 @@ import 'server_message.dart';
 import 'tab_mailbox.dart';
 
 abstract class Tab {
+  static const String upcomName = 'upcom';
+
   static Future main(SendPort interfacesSendPort, List args, Function constructor) async {
     // Set up the isolate's port pair.
     ReceivePort isolatesReceivePort = new ReceivePort();
@@ -23,12 +25,12 @@ abstract class Tab {
   }
 
   int id;
-  String guiName;
+  String refName, fullName, shortName;
 
   TabMailbox mailbox;
 
-  Tab(this.id, this.guiName, SendPort sendPort) {
-    mailbox = new TabMailbox(sendPort, guiName, id);
+  Tab(this.id, this.refName, this.fullName, this.shortName, SendPort sendPort) {
+    mailbox = new TabMailbox(sendPort, refName, id);
 
     // Register Tab's event handlers.
     mailbox.registerMessageHandler('CLOSE_TAB', _closeTab);
@@ -49,17 +51,17 @@ abstract class Tab {
 
   void _closeTab(String msg) {
     Msg m = new Msg('CLOSE_TAB', msg);
-    mailbox.relay('UpDroidClient', -1, m);
+    mailbox.relay(upcomName, -1, m);
   }
 
   void _cloneTab(String msg) {
     Msg m = new Msg('CLONE_TAB', msg);
-    mailbox.relay('UpDroidClient', -1, m);
+    mailbox.relay(upcomName, -1, m);
   }
 
   void _moveTab(String msg) {
     Msg m = new Msg('MOVE_TAB', msg);
-    mailbox.relay('UpDroidClient', -1, m);
+    mailbox.relay(upcomName, -1, m);
   }
 
   void _updateColumn(String msg) {

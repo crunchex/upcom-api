@@ -7,7 +7,7 @@ import 'dart:async';
 /// container with a menu bar in the UpDroid Commander GUI.
 abstract class ContainerView {
   int id, col;
-  String title, shortName;
+  String refName, fullName, shortName;
   List config;
   Map refMap;
 
@@ -17,9 +17,10 @@ abstract class ContainerView {
   LIElement tabHandle;
   UListElement menus;
 
-  ContainerView(this.id, this.col, this.title, this.shortName, this.config, DivElement handles) {
+  ContainerView(this.id, this.col, this.refName, this.fullName, this.shortName, this.config, DivElement handles) {
     refMap = {};
 
+    print('handles: ${handles.className}');
     _setUpTabHandle(handles);
     _setUpTabContainer();
   }
@@ -82,16 +83,14 @@ abstract class ContainerView {
 
   /// Takes a [num], [col], and [title] to add a new tab for the specified column.
   void _setUpTabHandle(DivElement handles) {
-    String name = title.toLowerCase().replaceAll(' ', '-');
-
     tabHandle = new LIElement()
-      ..id = 'tab-$name-$id-handle'
+      ..id = 'tab-$refName-$id-handle'
       ..classes.add('tab-handle')
       ..classes.add('active');
 
     tabHandleButton = new AnchorElement()
-        ..id = 'button-$name-$id'
-        ..href = '#tab-$name-$id-container'
+        ..id = 'button-$refName-$id'
+        ..href = '#tab-$refName-$id-container'
         ..dataset['toggle'] = 'tab';
     tabHandle.children.add(tabHandleButton);
 
@@ -101,10 +100,8 @@ abstract class ContainerView {
   /// Takes a [num], [col], [title], [config], and [active] to generate the menu bar and menu items
   /// for a tab. Returns a [Map] of references to the new [Element]s as a [Future].
   void _setUpTabContainer() {
-    String name = title.toLowerCase().replaceAll(' ', '-');
-
     tabContainer = new DivElement()
-        ..id = 'tab-$name-$id-container'
+        ..id = 'tab-$refName-$id-container'
         ..classes.add('tab-pane')
         ..classes.add('active');
 
@@ -121,16 +118,17 @@ abstract class ContainerView {
     }
 
     tabContent = new DivElement()
-        ..id = 'tab-$name-$id-content'
+        ..id = 'tab-$refName-$id-content'
         ..classes.add('tab-content')
         ..tabIndex = -1;
     tabContainer.children.add(tabContent);
 
     content = new DivElement()
-        ..classes.add(name);
+        ..classes.add(refName);
     tabContent.children.add(content);
     refMap['content'] = content;
 
+    print('selecting colOneTabContent: #col-$col-tab-content');
     DivElement colOneTabContent = querySelector('#col-$col-tab-content');
     colOneTabContent.children.insert(0, tabContainer);
   }
@@ -152,7 +150,7 @@ abstract class ContainerView {
     dropdown.children.add(dropdownToggle);
 
     UListElement dropdownMenu = new UListElement()
-        ..id = '${shortName.toLowerCase()}-$id-${title.toLowerCase().replaceAll(' ', '-')}'
+        ..id = '$refName-$id-${title.toLowerCase().replaceAll(' ', '-')}'
         ..classes.add('dropdown-menu')
         ..attributes['role'] = 'menu';
     dropdown.children.add(dropdownMenu);

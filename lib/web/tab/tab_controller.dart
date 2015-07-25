@@ -13,18 +13,18 @@ part 'tab_view.dart';
 abstract class TabController {
   int id, col;
   bool active;
-  String fullName, shortName;
+  String refName, fullName, shortName;
 
   TabView view;
   Mailbox mailbox;
   AnchorElement _closeTabButton;
 
-  TabController(this.fullName, this.shortName, List menuConfig, [String externalCssPath]) {
+  TabController(this.refName, this.fullName, this.shortName, List menuConfig, [String externalCssPath]) {
     // Wait an ID event before we continue with the setup.
     _getId().then((_) => _setupTab(menuConfig, externalCssPath));
 
     // Let UpCom know that we are ready for ID.
-    String detail = fullName;
+    String detail = refName;
     CustomEvent event = new CustomEvent('TabReadyForId', canBubble: false, cancelable: false, detail: detail);
     window.dispatchEvent(event);
   }
@@ -34,7 +34,7 @@ abstract class TabController {
     return tabIdStream.forTarget(window)
     .where((CustomEvent e) {
       Map detail = JSON.decode(e.detail);
-      return fullName == detail['className'];
+      return refName == detail['refName'];
     }).first.then((e) {
       Map detail = JSON.decode(e.detail);
       id = detail['id'];
@@ -43,10 +43,10 @@ abstract class TabController {
   }
 
   Future _setupTab(List menuConfig, [String externalCssPath]) async {
-    mailbox = new Mailbox(fullName, id);
+    mailbox = new Mailbox(refName, id);
     registerMailbox();
 
-    view = await TabView.createTabView(id, col, fullName, shortName, menuConfig, externalCssPath);
+    view = await TabView.createTabView(id, col, refName, fullName, shortName, menuConfig, externalCssPath);
 
     _closeTabButton = view.refMap['close-tab'];
     _closeTabButton.onClick.listen((e) => _closeTab());
@@ -70,7 +70,7 @@ abstract class TabController {
     // Also, this is done last as additional view set up may have been done in setUpController().
     view.tabContent.onFocus.listen((e) => elementToFocus.focus());
 
-    String detail = fullName;
+    String detail = refName;
     CustomEvent event = new CustomEvent('TabSetupComplete', canBubble: false, cancelable: false, detail: detail);
     window.dispatchEvent(event);
 
@@ -95,14 +95,14 @@ abstract class TabController {
     view.destroy();
     cleanUp();
 
-    UpDroidMessage um = new UpDroidMessage('CLOSE_TAB', '${fullName}_$id');
+    UpDroidMessage um = new UpDroidMessage('CLOSE_TAB', '$refName:$id');
     mailbox.ws.send(um.s);
 
     return true;
   }
 
-  void _cloneTab() => mailbox.ws.send('[[CLONE_TAB]]' + '${fullName}_${id}_$col');
-  void _moveTabTo(int newCol) => mailbox.ws.send('[[MOVE_TAB]]' + '${fullName}_${id}_${col}_$newCol');
+  void _cloneTab() => mailbox.ws.send(new UpDroidMessage('CLONE_TAB', '$refName:$id:$col').s);
+  void _moveTabTo(int newCol) => mailbox.ws.send(new UpDroidMessage('MOVE_TAB', '$refName:$id:$col:$newCol').s);
 
   void _updateColumn(UpDroidMessage um) {
     col = int.parse(um.body);
