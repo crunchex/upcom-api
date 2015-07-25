@@ -21,7 +21,6 @@ abstract class ContainerView {
       this.config, DivElement handles) {
     refMap = {};
 
-    print('handles: ${handles.className}');
     _setUpTabHandle(handles);
     _setUpTabContainer();
   }
