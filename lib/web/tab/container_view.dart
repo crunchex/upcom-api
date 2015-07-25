@@ -17,7 +17,8 @@ abstract class ContainerView {
   LIElement tabHandle;
   UListElement menus;
 
-  ContainerView(this.id, this.col, this.refName, this.fullName, this.shortName, this.config, DivElement handles) {
+  ContainerView(this.id, this.col, this.refName, this.fullName, this.shortName,
+      this.config, DivElement handles) {
     refMap = {};
 
     print('handles: ${handles.className}');
@@ -58,9 +59,11 @@ abstract class ContainerView {
     if (itemConfig['type'] == 'toggle') {
       if (itemConfig.containsKey('handler')) {
         if (itemConfig.containsKey('args')) {
-          itemElement = _createToggleItem(itemConfig['title'], itemConfig['handler'], itemConfig['args']);
+          itemElement = _createToggleItem(
+              itemConfig['title'], itemConfig['handler'], itemConfig['args']);
         } else {
-          itemElement = _createToggleItem(itemConfig['title'], itemConfig['handler']);
+          itemElement =
+              _createToggleItem(itemConfig['title'], itemConfig['handler']);
         }
       } else {
         itemElement = _createToggleItem(itemConfig['title']);
@@ -89,9 +92,9 @@ abstract class ContainerView {
       ..classes.add('active');
 
     tabHandleButton = new AnchorElement()
-        ..id = 'button-$refName-$id'
-        ..href = '#tab-$refName-$id-container'
-        ..dataset['toggle'] = 'tab';
+      ..id = 'button-$refName-$id'
+      ..href = '#tab-$refName-$id-container'
+      ..dataset['toggle'] = 'tab';
     tabHandle.children.add(tabHandleButton);
 
     handles.children.add(tabHandle);
@@ -101,15 +104,15 @@ abstract class ContainerView {
   /// for a tab. Returns a [Map] of references to the new [Element]s as a [Future].
   void _setUpTabContainer() {
     tabContainer = new DivElement()
-        ..id = 'tab-$refName-$id-container'
-        ..classes.add('tab-pane')
-        ..classes.add('active');
+      ..id = 'tab-$refName-$id-container'
+      ..classes.add('tab-pane')
+      ..classes.add('active');
 
     menus = new UListElement()
-        ..classes.add('nav')
-        ..classes.add('nav-tabs')
-        ..classes.add('inner-tabs')
-        ..attributes['role'] = 'tablist';
+      ..classes.add('nav')
+      ..classes.add('nav-tabs')
+      ..classes.add('inner-tabs')
+      ..attributes['role'] = 'tablist';
     tabContainer.children.add(menus);
 
     menus.children = new List<Element>();
@@ -118,13 +121,12 @@ abstract class ContainerView {
     }
 
     tabContent = new DivElement()
-        ..id = 'tab-$refName-$id-content'
-        ..classes.add('tab-content')
-        ..tabIndex = -1;
+      ..id = 'tab-$refName-$id-content'
+      ..classes.add('tab-content')
+      ..tabIndex = -1;
     tabContainer.children.add(tabContent);
 
-    content = new DivElement()
-        ..classes.add(refName);
+    content = new DivElement()..classes.add(refName);
     tabContent.children.add(content);
     refMap['content'] = content;
 
@@ -142,17 +144,18 @@ abstract class ContainerView {
     dropdown.classes.add('dropdown');
 
     AnchorElement dropdownToggle = new AnchorElement()
-        ..href = '#'
-        ..classes.add('dropdown-toggle')
-        ..dataset['toggle'] = 'dropdown'
-        ..text = title;
-    refMap['${title.toLowerCase().replaceAll(' ', '-')}-dropdown'] = dropdownToggle;
+      ..href = '#'
+      ..classes.add('dropdown-toggle')
+      ..dataset['toggle'] = 'dropdown'
+      ..text = title;
+    refMap['${title.toLowerCase().replaceAll(' ', '-')}-dropdown'] =
+        dropdownToggle;
     dropdown.children.add(dropdownToggle);
 
     UListElement dropdownMenu = new UListElement()
-        ..id = '$refName-$id-${title.toLowerCase().replaceAll(' ', '-')}'
-        ..classes.add('dropdown-menu')
-        ..attributes['role'] = 'menu';
+      ..id = '$refName-$id-${title.toLowerCase().replaceAll(' ', '-')}'
+      ..classes.add('dropdown-menu')
+      ..attributes['role'] = 'menu';
     dropdown.children.add(dropdownMenu);
 
     LIElement item;
@@ -166,7 +169,6 @@ abstract class ContainerView {
 
   /// Generates a toggle item (button) and returns the new [LIElement].
   LIElement _createDivider(String title) {
-
     LIElement dividerList = new LIElement();
 
     ParagraphElement dividerTitle = new ParagraphElement()
@@ -174,8 +176,7 @@ abstract class ContainerView {
       ..text = title;
     dividerList.children.add(dividerTitle);
 
-    HRElement divider = new HRElement()
-      ..classes.add('menu-divider');
+    HRElement divider = new HRElement()..classes.add('menu-divider');
     dividerList.children.add(divider);
 
     return dividerList;
@@ -184,17 +185,17 @@ abstract class ContainerView {
   ///Create a submenu within a dropdown
   LIElement _createSubMenu(String title, List<String> items) {
     String sanitizedId = title.toLowerCase().replaceAll('.', '');
-    sanitizedId = '${shortName.toLowerCase()}-$id-${sanitizedId.replaceAll(' ', '-')}';
+    sanitizedId =
+        '${shortName.toLowerCase()}-$id-${sanitizedId.replaceAll(' ', '-')}';
 
-    LIElement item = new LIElement()
-      ..classes.add('dropdown-submenu');
+    LIElement item = new LIElement()..classes.add('dropdown-submenu');
     AnchorElement button = new AnchorElement()
       ..tabIndex = -1
       ..href = '#'
       ..text = title;
     item.append(button);
     SpanElement dropdownIndicator = new SpanElement()
-    ..classes.addAll(['glyphicons', 'glyphicons-chevron-right']);
+      ..classes.addAll(['glyphicons', 'glyphicons-chevron-right']);
     button.children.add(dropdownIndicator);
     UListElement dropdown = new UListElement()
       ..id = sanitizedId
@@ -226,13 +227,13 @@ abstract class ContainerView {
     String name = title.toLowerCase().replaceAll(' ', '-');
 
     ParagraphElement p = new ParagraphElement()
-        ..style.display = 'inline-block'
-        ..text = title;
+      ..style.display = 'inline-block'
+      ..text = title;
     d.children.add(p);
 
     InputElement i = new InputElement()
-        ..id = '$name-input'
-        ..type = 'text';
+      ..id = '$name-input'
+      ..type = 'text';
     d.children.add(i);
     refMap[name] = i;
 
@@ -246,10 +247,10 @@ abstract class ContainerView {
 
     LIElement buttonList = new LIElement();
     AnchorElement button = new AnchorElement()
-        ..id = 'button-$sanitizedTitle'
-        ..href = '#'
-        ..attributes['role'] = 'button'
-        ..text = title;
+      ..id = 'button-$sanitizedTitle'
+      ..href = '#'
+      ..attributes['role'] = 'button'
+      ..text = title;
     if (onClick != null) {
       button.onClick.listen((e) {
         if (args != null) {
