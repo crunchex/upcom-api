@@ -137,6 +137,7 @@ abstract class ContainerView {
   /// Generates a dropdown menu and returns the new [LIElement].
   LIElement _createDropdownMenu(Map config) {
     String title = config['title'];
+    String sanitizedTitle = title.toLowerCase().replaceAll(' ', '-');
     List items = config['items'];
 
     LIElement dropdown = new LIElement();
@@ -147,12 +148,11 @@ abstract class ContainerView {
       ..classes.add('dropdown-toggle')
       ..dataset['toggle'] = 'dropdown'
       ..text = title;
-    refMap['${title.toLowerCase().replaceAll(' ', '-')}-dropdown'] =
-        dropdownToggle;
+    refMap['$sanitizedTitle-dropdown'] = dropdownToggle;
     dropdown.children.add(dropdownToggle);
 
     UListElement dropdownMenu = new UListElement()
-      ..id = '$refName-$id-${title.toLowerCase().replaceAll(' ', '-')}'
+      ..id = '$refName-$id-$sanitizedTitle'
       ..classes.add('dropdown-menu')
       ..attributes['role'] = 'menu';
     dropdown.children.add(dropdownMenu);
@@ -241,8 +241,8 @@ abstract class ContainerView {
 
   /// Generates a toggle item (button) and returns the new [LIElement].
   LIElement _createToggleItem(String title, [onClick, args]) {
-    String sanitizedTitle = title.toLowerCase().replaceAll('.', '');
-    sanitizedTitle = '${sanitizedTitle.replaceAll(' ', '-')}';
+    String sanitizedTitle =
+        title.toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
 
     LIElement buttonList = new LIElement();
     AnchorElement button = new AnchorElement()
