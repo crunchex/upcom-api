@@ -222,12 +222,12 @@ abstract class ContainerView {
   /// Generates an input item (label and input field) and returns
   /// the new [LIElement].
   LIElement _createInputItem(String title) {
+    String name = title.toLowerCase().replaceAll(' ', '-');
+
     LIElement li = new LIElement();
 
     DivElement d = new DivElement();
     li.children.add(d);
-
-    String name = title.toLowerCase().replaceAll(' ', '-');
 
     ParagraphElement p = new ParagraphElement()
       ..style.display = 'inline-block'
