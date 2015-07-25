@@ -3,11 +3,15 @@ library container_view;
 import 'dart:html';
 import 'dart:async';
 
-/// [ContainerView] contains methods to generate [Element]s that make up a tab/panel
-/// container with a menu bar in the UpDroid Commander GUI.
+/// [ContainerView] contains methods to generate [Element]s that make up a
+/// tab/panel container with a menu bar in the UpDroid Commander GUI.
 abstract class ContainerView {
-  int id, col;
-  String refName, fullName, shortName;
+  final int id;
+  final String refName, fullName, shortName;
+
+  // Column value can change when a container is moved.
+  int col;
+
   List config;
   Map refMap;
 
@@ -76,8 +80,7 @@ abstract class ContainerView {
     }
 
     if (dropdownMenuSelector != null) {
-      UListElement dropdownMenu = querySelector(dropdownMenuSelector);
-      dropdownMenu.children.add(itemElement);
+      querySelector(dropdownMenuSelector).children.add(itemElement);
     }
 
     return itemElement;
@@ -99,8 +102,9 @@ abstract class ContainerView {
     handles.children.add(tabHandle);
   }
 
-  /// Takes a [num], [col], [title], [config], and [active] to generate the menu bar and menu items
-  /// for a tab. Returns a [Map] of references to the new [Element]s as a [Future].
+  /// Takes a [num], [col], [title], [config], and [active] to generate the
+  /// menu bar and menu items for a tab. Returns a [Map] of references to
+  /// the new [Element]s as a [Future].
   void _setUpTabContainer() {
     tabContainer = new DivElement()
       ..id = 'tab-$refName-$id-container'
@@ -129,16 +133,15 @@ abstract class ContainerView {
     tabContent.children.add(content);
     refMap['content'] = content;
 
-    print('selecting colOneTabContent: #col-$col-tab-content');
-    DivElement colOneTabContent = querySelector('#col-$col-tab-content');
-    colOneTabContent.children.insert(0, tabContainer);
+    querySelector('#col-$col-tab-content').children.insert(0, tabContainer);
   }
 
   /// Generates a dropdown menu and returns the new [LIElement].
   LIElement _createDropdownMenu(Map config) {
     String title = config['title'];
-    String sanitizedTitle = title.toLowerCase().replaceAll(' ', '-');
     List items = config['items'];
+
+    String sanitizedTitle = title.toLowerCase().replaceAll(' ', '-');
 
     LIElement dropdown = new LIElement();
     dropdown.classes.add('dropdown');
@@ -183,9 +186,9 @@ abstract class ContainerView {
 
   ///Create a submenu within a dropdown
   LIElement _createSubMenu(String title, List<String> items) {
-    String sanitizedId = title.toLowerCase().replaceAll('.', '');
-    sanitizedId =
-        '${shortName.toLowerCase()}-$id-${sanitizedId.replaceAll(' ', '-')}';
+    String sanitizedTitle =
+        title.toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
+    String sanitizedId = '$refName-$id-$sanitizedTitle';
 
     LIElement item = new LIElement()..classes.add('dropdown-submenu');
     AnchorElement button = new AnchorElement()
