@@ -10,13 +10,16 @@ import 'server_message.dart';
 class TabMailbox {
   StreamController receiveStream;
 
-  Map _registry;
-  Map _endpointRegistry;
   SendPort _sendPort;
+  String _tabName;
+  int _id;
+  Map _registry, _endpointRegistry;
 
-  TabMailbox(SendPort sendPort) {
+  TabMailbox(SendPort sendPort, String tabName, int id) {
     receiveStream = new StreamController();
     _sendPort = sendPort;
+    _tabName = tabName;
+    _id = id;
 
     _registry = {};
     _endpointRegistry = {};
@@ -38,7 +41,10 @@ class TabMailbox {
   void receive(String received) => receiveStream.add(received);
 
   /// Sends out a [ServerMessage] to be send out of the Isolate and routed through [CmdrPostOffice].
-  void relay(ServerMessage sm) => _sendPort.send(sm.toString());
+  void relay(String receiver, int id, Msg m) {
+    ServerMessage sm = new ServerMessage(_tabName, _id, receiver, id, m);
+    _sendPort.send(sm.toString());
+  }
 
   /// Registers a [function] to be called when the Port receives a message that matches
   /// its associated header key.

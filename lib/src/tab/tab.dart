@@ -28,7 +28,7 @@ abstract class Tab {
   TabMailbox mailbox;
 
   Tab(this.id, this.guiName, SendPort sendPort) {
-    mailbox = new TabMailbox(sendPort);
+    mailbox = new TabMailbox(sendPort, guiName, id);
 
     // Register Tab's event handlers.
     mailbox.registerMessageHandler('CLOSE_TAB', _closeTab);
@@ -49,17 +49,17 @@ abstract class Tab {
 
   void _closeTab(String msg) {
     Msg m = new Msg('CLOSE_TAB', msg);
-    mailbox.relay(new ServerMessage('UpDroidClient', -1, m));
+    mailbox.relay('UpDroidClient', -1, m);
   }
 
   void _cloneTab(String msg) {
     Msg m = new Msg('CLONE_TAB', msg);
-    mailbox.relay(new ServerMessage('UpDroidClient', -1, m));
+    mailbox.relay('UpDroidClient', -1, m);
   }
 
   void _moveTab(String msg) {
     Msg m = new Msg('MOVE_TAB', msg);
-    mailbox.relay(new ServerMessage('UpDroidClient', -1, m));
+    mailbox.relay('UpDroidClient', -1, m);
   }
 
   void _updateColumn(String msg) {

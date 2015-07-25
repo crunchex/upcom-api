@@ -5,28 +5,30 @@ import 'dart:async';
 import 'updroid_message.dart';
 
 class ServerMessage {
-  String receiverClass;
-  int id;
+  String senderClass, receiverClass;
+  int senderId, receiverId;
   Msg um;
 
   /// Constructs a new [ServerMessage] where [receiverClass] is a class type,
   /// such as 'UpDroidClient'. [id] can be -1 for the destination with the lowest
   /// registered id number, 0 for all destinations of type [receiverClass], or
   /// any positive integer for one specific destination.
-  ServerMessage(this.receiverClass, this.id, this.um);
+  ServerMessage(this.senderClass, this.senderId, this.receiverClass, this.receiverId, this.um);
 
   ServerMessage.fromString(String raw) {
     int endIndex = raw.indexOf(':/s');
     String serverHeader = raw.substring(2, endIndex);
 
     List<String> split = serverHeader.split(':');
-    receiverClass = split[0];
-    id = int.parse(split[1]);
+    senderClass = split[0];
+    senderId = int.parse(split[1]);
+    receiverClass = split[2];
+    receiverId = int.parse(split[3]);
     um = new Msg.fromString(raw.substring(endIndex + 4, raw.length));
   }
 
   String toString() {
-    return 's:$receiverClass:$id:/s:${um.toString()}';
+    return 's:$senderClass:$senderId:$receiverClass:$receiverId:/s:${um.toString()}';
   }
 
   /// Transformer to convert String messages into the ServerMessages.
