@@ -17,22 +17,24 @@ abstract class TabController {
 
   TabView view;
   Mailbox mailbox;
+
   AnchorElement _closeTabButton;
 
-  TabController(this.refName, this.fullName, this.shortName, List menuConfig, [String externalCssPath]) {
-    // Wait an ID event before we continue with the setup.
+  TabController(this.refName, this.fullName, this.shortName, List menuConfig,
+      [String externalCssPath]) {
+    // Wait for an ID event before we continue with the setup.
     _getId().then((_) => _setupTab(menuConfig, externalCssPath));
 
     // Let UpCom know that we are ready for ID.
-    String detail = refName;
-    CustomEvent event = new CustomEvent('TabReadyForId', canBubble: false, cancelable: false, detail: detail);
+    CustomEvent event = new CustomEvent('TabReadyForId',
+        canBubble: false, cancelable: false, detail: refName);
     window.dispatchEvent(event);
   }
 
   Future _getId() {
-    EventStreamProvider<CustomEvent> tabIdStream = new EventStreamProvider<CustomEvent>('TabIdEvent');
-    return tabIdStream.forTarget(window)
-    .where((CustomEvent e) {
+    EventStreamProvider<CustomEvent> tabIdStream =
+        new EventStreamProvider<CustomEvent>('TabIdEvent');
+    return tabIdStream.forTarget(window).where((CustomEvent e) {
       Map detail = JSON.decode(e.detail);
       return refName == detail['refName'];
     }).first.then((e) {
@@ -46,7 +48,8 @@ abstract class TabController {
     mailbox = new Mailbox(refName, id);
     registerMailbox();
 
-    view = await TabView.createTabView(id, col, refName, fullName, shortName, menuConfig, externalCssPath);
+    view = await TabView.createTabView(
+        id, col, refName, fullName, shortName, menuConfig, externalCssPath);
 
     _closeTabButton = view.refMap['close-tab'];
     _closeTabButton.onClick.listen((e) => _closeTab());
@@ -56,13 +59,19 @@ abstract class TabController {
       e.preventDefault();
       List menu = [
         {'type': 'toggle', 'title': 'Clone', 'handler': _cloneTab},
-        {'type': 'toggle', 'title': 'Move ${col == 1 ? 'Right' : 'Left'}', 'handler': () => _moveTabTo(col == 1 ? 2 : 1)}];
+        {
+          'type': 'toggle',
+          'title': 'Move ${col == 1 ? 'Right' : 'Left'}',
+          'handler': () => _moveTabTo(col == 1 ? 2 : 1)
+        }
+      ];
       ContextMenu.createContextMenu(e.page, menu);
     });
 
     setUpController();
 
-    mailbox.registerWebSocketEvent(EventType.ON_MESSAGE, 'UPDATE_COLUMN', _updateColumn);
+    mailbox.registerWebSocketEvent(
+        EventType.ON_MESSAGE, 'UPDATE_COLUMN', _updateColumn);
     registerEventHandlers();
 
     // When the content of this tab receives focus, transfer it to whatever is the main content of the tab
@@ -70,8 +79,8 @@ abstract class TabController {
     // Also, this is done last as additional view set up may have been done in setUpController().
     view.tabContent.onFocus.listen((e) => elementToFocus.focus());
 
-    String detail = refName;
-    CustomEvent event = new CustomEvent('TabSetupComplete', canBubble: false, cancelable: false, detail: detail);
+    CustomEvent event = new CustomEvent('TabSetupComplete',
+        canBubble: false, cancelable: false, detail: refName);
     window.dispatchEvent(event);
 
     return null;
@@ -101,8 +110,10 @@ abstract class TabController {
     return true;
   }
 
-  void _cloneTab() => mailbox.ws.send(new UpDroidMessage('CLONE_TAB', '$refName:$id:$col').s);
-  void _moveTabTo(int newCol) => mailbox.ws.send(new UpDroidMessage('MOVE_TAB', '$refName:$id:$col:$newCol').s);
+  void _cloneTab() =>
+      mailbox.ws.send(new UpDroidMessage('CLONE_TAB', '$refName:$id:$col').s);
+  void _moveTabTo(int newCol) => mailbox.ws
+      .send(new UpDroidMessage('MOVE_TAB', '$refName:$id:$col:$newCol').s);
 
   void _updateColumn(UpDroidMessage um) {
     col = int.parse(um.body);
