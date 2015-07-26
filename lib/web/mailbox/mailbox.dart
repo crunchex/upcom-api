@@ -18,7 +18,7 @@ class Mailbox {
   Map _wsRegistry;
   Set<String> _waitForRegistry;
 
-  Mailbox(String name, int num, [StreamController<CommanderMessage> cs]) {
+  Mailbox(String name, int num) {
     _name = name;
     _id = num;
 
@@ -38,19 +38,19 @@ class Mailbox {
   /// Note: an [UpDroidMessage] header given to the waitFor registry takes precedence
   /// over any equivalent header registered as an on-message event handler. Also, waitFor
   /// will not allow duplicate headers registered at any one time.
-  Future<UpDroidMessage> waitFor(UpDroidMessage out) async {
+  Future<Msg> waitFor(Msg out) async {
     _waitForRegistry.add(out.header);
-    ws.send(out.s);
+    ws.send(out.toString());
 
     // Execution pauses here until an UpDroid Message with a matching header is received.
-    UpDroidMessage received = await ws.onMessage.transform(toUpDroidMessage).firstWhere((UpDroidMessage um) => um.header == out.header);
+    Msg received = await ws.onMessage.transform(Msg.toMsg).firstWhere((Msg um) => um.header == out.header);
     _waitForRegistry.remove(out.header);
     return received;
   }
 
   /// Registers a [function] to be called on one of the [WebSocket] events.
   /// If registering for ON_MESSAGE, [msg] is required to know which function to call.
-  void registerWebSocketEvent(EventType type, String msg, function(UpDroidMessage um)) {
+  void registerWebSocketEvent(EventType type, String msg, function(Msg um)) {
     if (type == EventType.ON_MESSAGE) {
       _wsRegistry[type][msg] = function;
       return;
@@ -68,9 +68,9 @@ class Mailbox {
     ws.onOpen.listen((e) => _wsRegistry[EventType.ON_OPEN].forEach((f(e)) => f(e)));
 
     // Call the function registered to ON_MESSAGE[um.header].
-    ws.onMessage.transform(toUpDroidMessage)
-    .where((UpDroidMessage um) => !_waitForRegistry.contains(um.header))
-    .listen((UpDroidMessage um) {
+    ws.onMessage.transform(Msg.toMsg)
+    .where((Msg um) => !_waitForRegistry.contains(um.header))
+    .listen((Msg um) {
       //print('[${_name}\'s Mailbox] UpDroidMessage received of type: ${um.header}');
       if (_wsRegistry[EventType.ON_MESSAGE].containsKey(um.header)) {
         _wsRegistry[EventType.ON_MESSAGE][um.header](um);

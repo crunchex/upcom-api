@@ -12,7 +12,6 @@ part 'unsaved.dart';
 part 'saved.dart';
 part 'open_tab.dart';
 part 'build_results.dart';
-part 'run_node.dart';
 part 'git_pass.dart';
 part 'new_workspace.dart';
 part 'delete_workspace.dart';

@@ -104,18 +104,18 @@ abstract class TabController {
     view.destroy();
     cleanUp();
 
-    UpDroidMessage um = new UpDroidMessage('CLOSE_TAB', '$refName:$id');
-    mailbox.ws.send(um.s);
+    Msg um = new Msg('CLOSE_TAB', '$refName:$id');
+    mailbox.ws.send(um.toString());
 
     return true;
   }
 
   void _cloneTab() =>
-      mailbox.ws.send(new UpDroidMessage('CLONE_TAB', '$refName:$id:$col').s);
+      mailbox.ws.send(new Msg('CLONE_TAB', '$refName:$id:$col').toString());
   void _moveTabTo(int newCol) => mailbox.ws
-      .send(new UpDroidMessage('MOVE_TAB', '$refName:$id:$col:$newCol').s);
+      .send(new Msg('MOVE_TAB', '$refName:$id:$col:$newCol').toString());
 
-  void _updateColumn(UpDroidMessage um) {
+  void _updateColumn(Msg um) {
     col = int.parse(um.body);
     view.col = int.parse(um.body);
   }
