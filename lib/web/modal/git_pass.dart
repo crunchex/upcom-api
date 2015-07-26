@@ -1,12 +1,9 @@
 part of updroid_modal;
 
 class UpDroidGitPassModal extends UpDroidModal {
-  StreamController<CommanderMessage> _cs;
   InputElement _input;
 
-  UpDroidGitPassModal(StreamController<CommanderMessage> cs) {
-    _cs = cs;
-
+  UpDroidGitPassModal() {
     _setupHead('Git Push to Remote');
     _setupBody();
     _setupFooter();
@@ -30,7 +27,7 @@ class UpDroidGitPassModal extends UpDroidModal {
 
   void _setupFooter() {
     ButtonElement submit = _createButton('primary', 'Submit', method: () {
-      _cs.add(new CommanderMessage('CLIENT', 'GIT_PASSWORD', body: _input.value));
+//      _cs.add(new CommanderMessage('CLIENT', 'GIT_PASSWORD', body: _input.value));
     });
     _modalFooter.children.insert(0, submit);
   }
