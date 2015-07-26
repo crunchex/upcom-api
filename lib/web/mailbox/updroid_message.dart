@@ -1,44 +1,41 @@
 part of mailbox;
 
-/// Container class that extracts the header (denoted with double brackets)
-/// and body from the raw text of a formatted [WebSocket] message received
-/// from the UpDroid server.
-class UpDroidMessage {
-  String s;
+/// A class that defines the message structure for tab communication.
+class Msg {
+  String header, body;
 
-  UpDroidMessage(String header, String body) {
-    s = '[[$header]]$body';
+  Msg(this.header, [String body]) {
+    this.body = (body == null) ? '' : body;
   }
 
-  UpDroidMessage.fromString(this.s);
+  /// Returns a new instance of [Msg], given a formatted String.
+  /// Throws an error if not in the format: [[HEADER]]body
+  Msg.fromString(String s) {
+    if (!s.contains('[[') || !s.contains(']]')) throw new MalformedMsgError(s);
 
-  String get header => createHeader();
-  String get body => createBody();
+    int indexOfSecondBrackets = s.indexOf(']]');
 
-  String createHeader() {
-    var header = new RegExp(r'^\[\[[A-Z_]+\]\]').firstMatch(s)[0];
-    return header.replaceAll(new RegExp(r'\[\[|\]\]'), '');
+    header = s.substring(2, indexOfSecondBrackets);
+    body = s.substring(indexOfSecondBrackets + 2, s.length);
   }
 
-  String createBody() => s.replaceFirst(new RegExp(r'^\[\[[A-Z_]+\]\]'), '');
+  String toString() {
+    return '[[$header]]$body';
+  }
+
+  bool get hasBody => body != '';
+
+  /// Transformer to convert String messages into the Msg.
+  static StreamTransformer toMsg = new StreamTransformer.fromHandlers(handleData: (event, sink) {
+    sink.add(new Msg.fromString(event));
+  });
+
+  /// Transformer to convert Msg into Strings that could be sent over Websockets or ports.
+  static StreamTransformer fromMsg = new StreamTransformer.fromHandlers(handleData: (event, sink) {
+    sink.add(event.data.s);
+  });
 }
 
-/// Transformer to convert serialized [WebSocket] messages into the UpDroidMessage.
-StreamTransformer toUpDroidMessage = new StreamTransformer.fromHandlers(handleData: (event, sink) {
-  sink.add(new UpDroidMessage.fromString(event.data));
-});
-
-/// Transformer to convert UpDroidMessages into serialized [WebSocket] messages.
-StreamTransformer fromUpDroidMessage = new StreamTransformer.fromHandlers(handleData: (event, sink) {
-  sink.add(event.data.s);
-});
-
-/// A class for the intra-client message passing.
-///   dest: the class that the message is meant for
-///   type: the type of message (e.g. 'command')
-///   body: the body of the message
-class CommanderMessage {
-  String dest, type;
-  var body;
-  CommanderMessage(this.dest, this.type, {this.body});
+class MalformedMsgError extends StateError {
+  MalformedMsgError(String msg) : super('Wrong format for Msg: $msg');
 }
