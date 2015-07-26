@@ -27,7 +27,9 @@ class Msg {
 
   /// Transformer to convert String messages into the Msg.
   static StreamTransformer toMsg = new StreamTransformer.fromHandlers(handleData: (event, sink) {
-    sink.add(new Msg.fromString(event));
+    // Note: for some reason, we need to supply event.data instead of just data like in the other
+    // UpDroidMessage.
+    sink.add(new Msg.fromString(event.data));
   });
 
   /// Transformer to convert Msg into Strings that could be sent over Websockets or ports.
