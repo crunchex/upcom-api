@@ -19,9 +19,7 @@ class Msg {
     body = s.substring(indexOfSecondBrackets + 2, s.length);
   }
 
-  String toString() {
-    return '[[$header]]$body';
-  }
+  String toString() => '[[$header]]$body';
 
   bool get hasBody => body != '';
 
