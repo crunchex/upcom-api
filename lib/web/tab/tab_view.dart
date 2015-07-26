@@ -22,7 +22,7 @@ class TabView extends ContainerView {
       loadExternalCss(externalCssPath);
     }
 
-    tabHandleButton.text = '$refName-$id';
+    tabHandleButton.text = '$shortName-$id';
 
     extra = new LIElement();
     extra.id = 'extra-$id';
