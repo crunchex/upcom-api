@@ -89,6 +89,12 @@ abstract class TabController {
   void makeActive() => view.makeActive();
   void makeInactive() => view.makeInactive();
 
+  String get hoverText => view.tabHandle.title;
+
+  void set hoverText(String text) {
+    view.tabHandle.title = text;
+  }
+
   void registerMailbox();
   void setUpController();
   void registerEventHandlers();
