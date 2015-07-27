@@ -28,7 +28,7 @@ class Mailbox {
     // Create the server <-> client [WebSocket].
     // Port 12060 is the default port that UpDroid uses.
     String url = window.location.host.split(':')[0];
-    _initWebSocket(url, true);
+    _initWebSocket(url);
   }
 
   /// Returns a [Future] [UpDroidMessage] as a response from the server when given a
@@ -59,7 +59,7 @@ class Mailbox {
     _wsRegistry[type].add(function);
   }
 
-  void _initWebSocket(String url, enableDisconnectedAlert, [int retrySeconds = 2]) {
+  void _initWebSocket(String url, [int retrySeconds = 2]) {
     bool encounteredError = false;
 
     ws = new WebSocket('ws://' + url + ':12060/${_name}/$_id');
@@ -79,27 +79,24 @@ class Mailbox {
       }
     });
 
-    //TODO: Should only alert if everything is disconnected (in case only console isnt connected)
+    // Disabled auto-reconnect until we can detect whether a crash is occurred, in which case
+    // everything needs to be restarted, or the connection has temporarily dropped.
     ws.onClose.listen((e) {
       _wsRegistry[EventType.ON_CLOSE].forEach((f(e)) => f(e));
 
-      if (_name == 'UpDroidClient' && enableDisconnectedAlert) {
-        window.alert("UpDroid Commander has lost connection to the server.");
-      }
-
       //print('$_name-$_id disconnected. Retrying...');
-      if (!encounteredError) {
-        new Timer(new Duration(seconds:retrySeconds), () => _initWebSocket(url, false, retrySeconds * 2));
-      }
-      encounteredError = true;
+//      if (!encounteredError) {
+//        new Timer(new Duration(seconds:retrySeconds), () => _initWebSocket(url, retrySeconds * 2));
+//      }
+//      encounteredError = true;
     });
 
-    ws.onError.listen((e) {
-      //print('$_name-$_id disconnected. Retrying...');
-      if (!encounteredError) {
-        new Timer(new Duration(seconds:retrySeconds), () => _initWebSocket(url, false, retrySeconds * 2));
-      }
-      encounteredError = true;
-    });
+//    ws.onError.listen((e) {
+//      //print('$_name-$_id disconnected. Retrying...');
+//      if (!encounteredError) {
+//        new Timer(new Duration(seconds:retrySeconds), () => _initWebSocket(url, retrySeconds * 2));
+//      }
+//      encounteredError = true;
+//    });
   }
 }
