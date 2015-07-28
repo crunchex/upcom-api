@@ -173,7 +173,7 @@ class Workspace {
     if (_building) c.complete(null);
 
     _building = true;
-    String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make && catkin_make install';
+    String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make && catkin_make install && . $path/devel/setup.bash';
     Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
       _building = false;
       c.complete(result);
@@ -189,7 +189,7 @@ class Workspace {
     if (_building) c.complete(null);
 
     _building = true;
-    String buildCommand = '$path/devel/setup.bash && catkin_make --pkg $packageName && catkin_make install';
+    String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make --pkg $packageName && catkin_make install';
     Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
       _building = false;
       c.complete(result);
@@ -208,7 +208,7 @@ class Workspace {
     _building = true;
     String packageListString = '';
     packageNames.forEach((String packageName) => packageListString += ' $packageName');
-    String buildCommand = '$path/devel/setup.bash && catkin_make --pkg$packageListString && catkin_make install';
+    String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make --pkg$packageListString && catkin_make install';
     Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
       _building = false;
       c.complete(result);
