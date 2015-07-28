@@ -3,6 +3,8 @@ library tab;
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:path/path.dart';
+
 import 'updroid_message.dart';
 import 'server_message.dart';
 import 'tab_mailbox.dart';
@@ -15,21 +17,26 @@ abstract class Tab {
     ReceivePort isolatesReceivePort = new ReceivePort();
     interfacesSendPort.send(isolatesReceivePort.sendPort);
 
-    int id = args[0];
-    String path = args[1];
-    Tab tab = constructor(id, path, interfacesSendPort, args);
+    Tab tab = constructor(interfacesSendPort, args);
 
     await for (var received in isolatesReceivePort) {
       tab.mailbox.receive(received);
     }
   }
 
+  String refName, fullName, shortName, tabPath;
   int id;
-  String refName, fullName, shortName;
 
   TabMailbox mailbox;
 
-  Tab(this.id, this.refName, this.fullName, this.shortName, SendPort sendPort) {
+  Tab(List names, SendPort sendPort, List args) {
+    refName = names[0];
+    fullName = names[1];
+    shortName = names[2];
+
+    tabPath = normalize(args[0]);
+    id = args[1];
+
     mailbox = new TabMailbox(sendPort, refName, id);
 
     // Register Tab's event handlers.
