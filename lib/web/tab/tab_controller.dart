@@ -20,8 +20,11 @@ abstract class TabController {
 
   AnchorElement _closeTabButton;
 
-  TabController(this.refName, this.fullName, this.shortName, List menuConfig,
+  TabController(List<String> names, List menuConfig,
       [String externalCssPath]) {
+    refName = names[0];
+    fullName = names[1];
+    shortName = names[2];
     // Wait for an ID event before we continue with the setup.
     _getId().then((_) => _setupTab(menuConfig, externalCssPath));
 
