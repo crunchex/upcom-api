@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:xml/xml.dart';
+import 'package:quiver/async.dart';
 
 import '../debug/server_helper.dart' as help;
 
@@ -164,7 +165,17 @@ class Workspace {
 //  }
 
   /// Cleans the workspace by removing build, devel, and install directories.
-  Future<ProcessResult> clean() => Process.run('rm', ['-rf', 'build', 'devel', 'install'], workingDirectory: path, runInShell: true);
+  Future<ProcessResult> cleanWorkspace() => Process.run('rm', ['-rf', 'build', 'devel', 'install'], workingDirectory: path, runInShell: true);
+
+  /// Cleans a package by removing build and devel directories for the package.
+  ///
+  /// Not a ROS built-in, see: http://answers.ros.org/question/138731/catkin_make-clean/
+  Future<List> cleanPackage(String packageName) {
+    FutureGroup cleanGroup = new FutureGroup();
+    cleanGroup.add(Process.run('rm', ['-rf', 'build/$packageName'], workingDirectory: path, runInShell: true));
+    cleanGroup.add(Process.run('rm', ['-rf', 'devel'], workingDirectory: path, runInShell: true));
+    return cleanGroup.future;
+  }
 
   /// Builds the workspace.
   ///

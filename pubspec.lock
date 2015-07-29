@@ -33,6 +33,10 @@ packages:
     description: logging_handlers
     source: hosted
     version: "0.8.0"
+  matcher:
+    description: matcher
+    source: hosted
+    version: "0.12.0+1"
   path:
     description: path
     source: hosted
@@ -41,6 +45,10 @@ packages:
     description: petitparser
     source: hosted
     version: "1.4.3"
+  quiver:
+    description: quiver
+    source: hosted
+    version: "0.21.4"
   watcher:
     description: watcher
     source: hosted

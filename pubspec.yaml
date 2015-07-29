@@ -10,4 +10,5 @@ dependencies:
   bootjack: any
   logging: any
   logging_handlers: any
+  quiver: any
   xml: any
