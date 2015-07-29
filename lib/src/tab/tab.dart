@@ -6,7 +6,6 @@ import 'dart:isolate';
 import 'package:path/path.dart';
 
 import 'updroid_message.dart';
-import 'server_message.dart';
 import 'tab_mailbox.dart';
 
 abstract class Tab {

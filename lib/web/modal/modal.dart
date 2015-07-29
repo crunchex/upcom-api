@@ -2,11 +2,8 @@ library updroid_modal;
 
 import 'dart:html';
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bootjack/bootjack.dart';
-
-import '../mailbox/mailbox.dart';
 
 part 'unsaved.dart';
 part 'saved.dart';
