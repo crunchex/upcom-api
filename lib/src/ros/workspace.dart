@@ -2,6 +2,7 @@ library workspace;
 
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:xml/xml.dart';
 
@@ -168,53 +169,83 @@ class Workspace {
   /// Builds the workspace.
   ///
   /// Equivalent to running 'catkin_make' and 'catkin_make install'.
-  Future<ProcessResult> buildWorkspace() {
-    Completer c = new Completer();
-    if (_building) c.complete(null);
+  Stream buildWorkspace() {
+    if (_building) return null;
 
     _building = true;
+    StreamController outputStream = new StreamController();
     String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make && catkin_make install && . $path/devel/setup.bash';
-    Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
-      _building = false;
-      c.complete(result);
+    Process.start('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((Process process) {
+      process
+        ..stdout.transform(UTF8.decoder).listen((data) {
+        if (!outputStream.isClosed) outputStream.add(data);
+      })
+        ..stderr.transform(UTF8.decoder).listen((data) {
+        if (!outputStream.isClosed) outputStream.add(data);
+      })
+        ..exitCode.then((exitCode) {
+        outputStream.close();
+        _building = false;
+      });
     });
 
-    return c.future;}
+    return outputStream.stream;
+  }
 
   /// Builds a package.
   ///
   /// Equivalent to running 'catkin_make --pkg' and 'catkin_make install'.
-  Future<ProcessResult> buildPackage(String packageName) {
-    Completer c = new Completer();
-    if (_building) c.complete(null);
+  /// Returns a Stream of the command's stdout and stderr (build output/results).
+  Stream buildPackage(String packageName) {
+    if (_building) return null;
 
     _building = true;
+    StreamController outputStream = new StreamController();
     String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make --pkg $packageName && catkin_make install';
-    Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
-      _building = false;
-      c.complete(result);
+    Process.start('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((Process process) {
+      process
+        ..stdout.transform(UTF8.decoder).listen((data) {
+          if (!outputStream.isClosed) outputStream.add(data);
+        })
+        ..stderr.transform(UTF8.decoder).listen((data) {
+          if (!outputStream.isClosed) outputStream.add(data);
+        })
+        ..exitCode.then((exitCode) {
+          outputStream.close();
+          _building = false;
+        });
     });
 
-    return c.future;
+    return outputStream.stream;
   }
 
   /// Builds multiple packages given a list of package names..
   ///
   /// Equivalent to running 'catkin_make --pkg pkg1...pk2...' and 'catkin_make install'.
-  Future<ProcessResult> buildPackages(List<String> packageNames) {
-    Completer c = new Completer();
-    if (_building) c.complete(null);
+  Stream buildPackages(List<String> packageNames) {
+    if (_building) return null;
 
     _building = true;
     String packageListString = '';
     packageNames.forEach((String packageName) => packageListString += ' $packageName');
+
+    StreamController outputStream = new StreamController();
     String buildCommand = '/opt/ros/indigo/setup.bash && catkin_make --pkg$packageListString && catkin_make install';
-    Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
-      _building = false;
-      c.complete(result);
+    Process.start('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((Process process) {
+      process
+        ..stdout.transform(UTF8.decoder).listen((data) {
+        if (!outputStream.isClosed) outputStream.add(data);
+      })
+        ..stderr.transform(UTF8.decoder).listen((data) {
+        if (!outputStream.isClosed) outputStream.add(data);
+      })
+        ..exitCode.then((exitCode) {
+        outputStream.close();
+        _building = false;
+      });
     });
 
-    return c.future;
+    return outputStream.stream;
   }
 
   Future<ProcessResult> createPackage(String name, List<String> dependencies) {
