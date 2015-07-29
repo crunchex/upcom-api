@@ -1,4 +1,4 @@
-library server_helper;
+library upcom_api.lib.src.debug.debug;
 
 import 'dart:io';
 import 'package:logging/logging.dart';

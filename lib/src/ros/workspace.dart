@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:xml/xml.dart';
 import 'package:quiver/async.dart';
 
-import '../debug/server_helper.dart' as help;
+import '../debug/debug.dart' as help;
 
 /// A representation of a ROS catkin workspace (as of Indigo).
 ///
