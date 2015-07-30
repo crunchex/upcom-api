@@ -21,7 +21,7 @@ class UpDroidOpenTabModal extends UpDroidModal {
     _modalBody.children.add(selectorWrap);
 
     _tabsInfo.values.forEach((Map tabInfo) {
-      ButtonElement tabButton = _createButton('default', tabInfo['fullName'])..onClick.listen((_) => _openTab(tabInfo));
+      ButtonElement tabButton = _createButton('default', tabInfo['shortName'])..onClick.listen((_) => _openTab(tabInfo));
       selectorWrap.children.add(tabButton);
     });
   }
