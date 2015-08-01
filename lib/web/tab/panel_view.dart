@@ -1,4 +1,4 @@
-part of panel_controller;
+part of upcom_api.lib.web.tab.panel_controller;
 
 /// [PanelView] contains generic methods and fields that make up the visual
 /// side of a Panel.
