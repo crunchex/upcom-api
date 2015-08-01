@@ -1,4 +1,4 @@
-library mailbox;
+library upcom_api.lib.web.mailbox.mailbox;
 
 import 'dart:html';
 import 'dart:async';

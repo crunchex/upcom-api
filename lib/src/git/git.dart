@@ -1,4 +1,4 @@
-library git_main;
+library upcom_api.lib.src.git.git;
 
 import 'dart:io';
 import 'dart:convert';

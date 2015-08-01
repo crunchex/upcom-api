@@ -1,4 +1,4 @@
-part of tab_controller;
+part of upcom_api.lib.web.tab.tab_controller;
 
 /// [UpDroidTab] contains methods to generate [Element]s that make up a tab
 /// and menu bar in the UpDroid Commander GUI.

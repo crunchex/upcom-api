@@ -1,4 +1,4 @@
-library container_view;
+library upcom_api.lib.web.tab.container_view;
 
 import 'dart:html';
 import 'dart:async';

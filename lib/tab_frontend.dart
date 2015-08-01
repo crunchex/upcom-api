@@ -1,4 +1,4 @@
-library tab_frontend;
+library upcom_api.lib.tab_frontend;
 
 export 'web/mailbox/mailbox.dart';
 export 'web/tab/container_view.dart';

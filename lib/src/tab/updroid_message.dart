@@ -1,4 +1,4 @@
-library updroid_message;
+library upcom_api.lib.src.tab.updroid_message;
 
 import 'dart:async';
 

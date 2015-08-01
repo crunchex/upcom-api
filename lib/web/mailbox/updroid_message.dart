@@ -1,4 +1,4 @@
-part of mailbox;
+part of upcom_api.lib.web.mailbox.mailbox;
 
 /// A class that defines the message structure for tab communication.
 class Msg {

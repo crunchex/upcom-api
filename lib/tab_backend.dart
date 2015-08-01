@@ -1,4 +1,4 @@
-library tab_backend;
+library upcom_api.lib.tab_backend;
 
 export 'src/tab/tab.dart';
 export 'src/tab/tab_mailbox.dart';

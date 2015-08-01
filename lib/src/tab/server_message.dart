@@ -1,4 +1,4 @@
-library server_message;
+library upcom_api.lib.src.tab.server_message;
 
 import 'dart:async';
 

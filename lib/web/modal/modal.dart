@@ -1,4 +1,4 @@
-library updroid_modal;
+library upcom_api.lib.web.modal.modal;
 
 import 'dart:html';
 import 'dart:async';

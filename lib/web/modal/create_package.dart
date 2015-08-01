@@ -1,4 +1,4 @@
-part of updroid_modal;
+part of upcom_api.lib.web.modal.modal;
 
 class UpDroidCreatePackageModal extends UpDroidModal {
   InputElement inputName, inputDependencies;

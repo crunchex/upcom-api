@@ -1,4 +1,4 @@
-library context_menu;
+library upcom_api.lib.web.menu.context_menu;
 
 import 'dart:html';
 import 'dart:async';

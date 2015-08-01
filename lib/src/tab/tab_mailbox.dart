@@ -1,4 +1,4 @@
-library tab_mailbox;
+library upcom_api.lib.src.tab.tab_mailbox;
 
 import 'dart:async';
 import 'dart:isolate';

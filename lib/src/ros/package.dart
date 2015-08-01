@@ -1,4 +1,9 @@
-part of ros;
+library upcom_api.lib.src.ros.package;
+
+import 'dart:async';
+import 'dart:io';
+
+import 'workspace.dart';
 
 /// A representation of a ROS package (as of Indigo).
 class Package {

@@ -1,4 +1,4 @@
-library workspace;
+library upcom_api.lib.src.ros.workspace;
 
 import 'dart:io';
 import 'dart:async';

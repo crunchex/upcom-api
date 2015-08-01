@@ -1,4 +1,4 @@
-part of updroid_modal;
+part of upcom_api.lib.web.modal.modal;
 
 class UpDroidGitPassModal extends UpDroidModal {
   InputElement _input;

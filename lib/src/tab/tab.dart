@@ -1,4 +1,4 @@
-library tab;
+library upcom_api.lib.src.tab.tab;
 
 import 'dart:async';
 import 'dart:isolate';

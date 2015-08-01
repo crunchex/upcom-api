@@ -1,4 +1,4 @@
-library tab_controller;
+library upcom_api.lib.web.tab.tab_controller;
 
 import 'dart:html';
 import 'dart:async';
