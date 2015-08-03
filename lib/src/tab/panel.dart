@@ -6,7 +6,7 @@ import 'dart:isolate';
 import 'package:path/path.dart';
 
 import 'updroid_message.dart';
-import 'tab_mailbox.dart';
+import 'plugin_mailbox.dart';
 
 abstract class Panel {
   static const String upcomName = 'upcom';
@@ -26,7 +26,7 @@ abstract class Panel {
   String refName, fullName, shortName, panelPath;
   int id;
 
-  TabMailbox mailbox;
+  PluginMailbox mailbox;
 
   Panel(List names, SendPort sendPort, List args) {
     refName = names[0];
@@ -36,7 +36,7 @@ abstract class Panel {
     panelPath = normalize(args[0]);
     id = args[1];
 
-    mailbox = new TabMailbox(sendPort, refName, id);
+    mailbox = new PluginMailbox(sendPort, refName, id);
 
     // Register Panel's event handlers.
     mailbox.registerMessageHandler('CLOSE_PANEL', _closePanel);

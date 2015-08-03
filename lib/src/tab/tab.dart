@@ -26,7 +26,7 @@ abstract class Tab {
   String refName, fullName, shortName, tabPath;
   int id;
 
-  TabMailbox mailbox;
+  PluginMailbox mailbox;
 
   Tab(List names, SendPort sendPort, List args) {
     refName = names[0];
@@ -36,7 +36,7 @@ abstract class Tab {
     tabPath = normalize(args[0]);
     id = args[1];
 
-    mailbox = new TabMailbox(sendPort, refName, id);
+    mailbox = new PluginMailbox(sendPort, refName, id);
 
     // Register Tab's event handlers.
     mailbox.registerMessageHandler('CLOSE_TAB', _closeTab);
