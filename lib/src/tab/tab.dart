@@ -6,7 +6,7 @@ import 'dart:isolate';
 import 'package:path/path.dart';
 
 import 'updroid_message.dart';
-import 'tab_mailbox.dart';
+import 'plugin_mailbox.dart';
 
 abstract class Tab {
   static const String upcomName = 'upcom';
