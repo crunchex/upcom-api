@@ -50,7 +50,7 @@ abstract class PanelController {
 
     view = await PanelView.createPanelView(id, col, refName, fullName, shortName, menuConfig, externalCssPath);
 
-    _closeTabButton = view.refMap['close-tab'];
+    _closeTabButton = view.refMap['close-panel'];
     _closeTabButton.onClick.listen((e) => _closePanel());
     view.closeControlHitbox.onClick.listen((e) => _closePanel());
 
