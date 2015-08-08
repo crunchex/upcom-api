@@ -16,7 +16,7 @@ class PanelView extends ContainerView {
   DivElement closeControlHitbox;
 
   PanelView(int id, int col, String refName, String fullName, String shortName, List config, [String externalCssPath]) :
-  super(id, col, refName, fullName, shortName, config, querySelector('#column-$col').children[1]) {
+  super(id, col, refName, fullName, shortName, config, querySelector('#column-$col').children[0]) {
     if (externalCssPath != null) {
       loadExternalCss(externalCssPath);
     }
