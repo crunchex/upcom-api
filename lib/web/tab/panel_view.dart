@@ -21,6 +21,8 @@ class PanelView extends ContainerView {
       loadExternalCss(externalCssPath);
     }
 
+    tabHandle.classes.add('panel-handle');
+
     tabHandleButton.text = '$shortName';
 
     closeControlHitbox = new DivElement()
