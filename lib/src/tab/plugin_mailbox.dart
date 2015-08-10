@@ -1,4 +1,4 @@
-library upcom_api.lib.src.tab.tab_mailbox;
+library upcom_api.lib.src.tab.plugin_mailbox;
 
 import 'dart:async';
 import 'dart:isolate';
@@ -6,8 +6,8 @@ import 'dart:isolate';
 import 'updroid_message.dart';
 import 'server_message.dart';
 
-/// Manages message passing for a tab.
-class TabMailbox {
+/// Manages message passing for a plugin.
+class PluginMailbox {
   StreamController receiveStream;
 
   SendPort _sendPort;
@@ -15,7 +15,7 @@ class TabMailbox {
   int _id;
   Map _registry, _endpointRegistry;
 
-  TabMailbox(SendPort sendPort, String refName, int id) {
+  PluginMailbox(SendPort sendPort, String refName, int id) {
     receiveStream = new StreamController();
     _sendPort = sendPort;
     _refName = refName;
@@ -34,7 +34,7 @@ class TabMailbox {
     });
   }
 
-  /// Sends out a [Msg] through the [SendPort] associated with this [TabMailbox].
+  /// Sends out a [Msg] through the [SendPort] associated with this [PluginMailbox].
   void send(Msg m) => _sendPort.send(m.toString());
 
   /// Processes an incoming message, eventually transforming into a [Msg].
