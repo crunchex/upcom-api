@@ -106,6 +106,23 @@ class Workspace {
     return src.list(recursive: true, followLinks: false).transform(toLaunchFiles()).asBroadcastStream();
   }
 
+  /// Lists currently running nodes.
+  ///
+  /// Equivalent to running 'rosnode list'.
+  Future<List> listRunningNodes() {
+    Completer c = new Completer();
+
+    String buildCommand = '/opt/ros/indigo/setup.bash && rosnode list';
+    Process.run('bash', ['-c', '. $buildCommand'], workingDirectory: path, runInShell: true).then((ProcessResult result) {
+      List<String> nodesList = result.stdout.split('\n');
+      // Splitting on newline yields an empty element in the last spot.
+      nodesList.removeLast();
+      c.complete(nodesList);
+    });
+
+    return c.future;
+  }
+
   /// Transformer to convert serialized [WebSocket] messages into the UpDroidMessage.
   StreamTransformer toWorkspaceContents(String path) => new StreamTransformer.fromHandlers(handleData: (file, sink) {
     if (file.path.contains('$path/src')) {
