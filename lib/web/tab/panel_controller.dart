@@ -18,8 +18,6 @@ abstract class PanelController {
   PanelView view;
   Mailbox mailbox;
 
-  AnchorElement _closeTabButton;
-
   PanelController(List<String> names, List menuConfig, [String externalCssPath]) {
     refName = names[0];
     fullName = names[1];
@@ -49,10 +47,6 @@ abstract class PanelController {
     registerMailbox();
 
     view = await PanelView.createPanelView(id, col, refName, fullName, shortName, menuConfig, externalCssPath);
-
-    _closeTabButton = view.refMap['close-panel'];
-    _closeTabButton.onClick.listen((e) => _closePanel());
-    view.closeControlHitbox.onClick.listen((e) => _closePanel());
 
     // TODO: set up panel-specific context menu.
 //    view.tabHandleButton.onContextMenu.listen((e) {
