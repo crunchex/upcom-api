@@ -308,6 +308,56 @@ class Workspace {
     });
   }
 
+  Future<bool> killNodeFromString(String nodeName) {
+    Completer c = new Completer();
+
+    String runCommand = '/opt/ros/indigo/setup.bash && rosnode kill $nodeName';
+    help.debug('running: $runCommand', 0);
+    Process.run('bash', ['-c', '. $runCommand'], runInShell: true).then((process) {
+      if (process.stdout.contains('killed')) {
+        c.complete(true);
+      } else {
+        c.complete(false);
+      }
+    });
+
+    return c.future;
+  }
+
+  Future<bool> killNodesFromList(List nodeList) {
+    Completer c = new Completer();
+
+    String nodeNames = '';
+    nodeList.forEach((nodeName) => nodeNames += ' $nodeName');
+    String runCommand = '/opt/ros/indigo/setup.bash && rosnode kill$nodeNames';
+    help.debug('running: $runCommand', 0);
+    Process.run('bash', ['-c', '. $runCommand'], runInShell: true).then((process) {
+      if (process.stdout.contains('killed')) {
+        c.complete(true);
+      } else {
+        c.complete(false);
+      }
+    });
+
+    return c.future;
+  }
+
+  Future<bool> killAllNodes() {
+    Completer c = new Completer();
+
+    String runCommand = '/opt/ros/indigo/setup.bash && rosnode kill -a';
+    help.debug('running: $runCommand', 0);
+    Process.run('bash', ['-c', '. $runCommand'], runInShell: true).then((process) {
+      if (process.stdout.contains('killed')) {
+        c.complete(true);
+      } else {
+        c.complete(false);
+      }
+    });
+
+    return c.future;
+  }
+
   /// Gets the path of this workspace.
   String get path => _delegate.path;
 }
