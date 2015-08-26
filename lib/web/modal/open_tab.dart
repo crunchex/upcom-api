@@ -22,6 +22,9 @@ class UpDroidOpenTabModal extends UpDroidModal {
 
     _tabsInfo.values.forEach((Map tabInfo) {
       ButtonElement tabButton = _createButton('default', tabInfo['shortName'])..onClick.listen((_) => _openTab(tabInfo));
+      if(tabInfo['shortName'] == 'teleop') {
+        tabButton.classes.add('hidden', 'teleop');
+      }
       selectorWrap.children.add(tabButton);
     });
   }
