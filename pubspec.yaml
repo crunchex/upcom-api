@@ -1,5 +1,5 @@
 name: upcom-api
-version: 0.1.0
+version: 0.5.3
 authors:
 - Mike Lewis <mike@updroid.com>
 description: API for building UpDroid Commander applications.
