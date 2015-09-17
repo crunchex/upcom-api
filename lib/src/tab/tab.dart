@@ -51,11 +51,14 @@ abstract class Tab {
   void registerMailbox();
   void cleanup();
 
+  // TODO: Is this used anywhere?
   void close() {
     cleanup();
   }
 
   void _closeTab(String msg) {
+    cleanup();
+
     Msg m = new Msg('CLOSE_TAB', msg);
     mailbox.relay(upcomName, -1, m);
   }
