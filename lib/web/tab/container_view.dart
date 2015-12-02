@@ -21,9 +21,13 @@ abstract class ContainerView {
   LIElement tabHandle;
   UListElement menus;
 
+  bool _menuEnabled;
+
   ContainerView(this.id, this.col, this.refName, this.fullName, this.shortName,
-      this.config, DivElement handles) {
+      this.config, DivElement handles, [bool enableMenu=true]) {
     refMap = {};
+
+    _menuEnabled = enableMenu;
 
     _setUpTabHandle(handles);
     _setUpTabContainer();
@@ -58,6 +62,11 @@ abstract class ContainerView {
   }
 
   LIElement addMenuItem(Map itemConfig, [String dropdownMenuSelector]) {
+    if (!_menuEnabled) {
+      throw new ViewMixupError('Tried to add a menu item on a ContainerView with menus disabled.');
+      return null;
+    }
+
     String type = itemConfig['type'];
     String title = itemConfig['title'];
     String handler = itemConfig['handler'];
@@ -112,16 +121,18 @@ abstract class ContainerView {
       ..classes.add('tab-pane')
       ..classes.add('active');
 
-    menus = new UListElement()
-      ..classes.add('nav')
-      ..classes.add('nav-tabs')
-      ..classes.add('inner-tabs')
-      ..attributes['role'] = 'tablist';
-    tabContainer.children.add(menus);
+    if (_menuEnabled) {
+      menus = new UListElement()
+        ..classes.add('nav')
+        ..classes.add('nav-tabs')
+        ..classes.add('inner-tabs')
+        ..attributes['role'] = 'tablist';
+      tabContainer.children.add(menus);
 
-    menus.children = new List<Element>();
-    for (Map configItem in config) {
-      menus.children.add(_createDropdownMenu(configItem));
+      menus.children = new List<Element>();
+      for (Map configItem in config) {
+        menus.children.add(_createDropdownMenu(configItem));
+      }
     }
 
     tabContent = new DivElement()
@@ -264,4 +275,8 @@ abstract class ContainerView {
 
     return buttonList;
   }
+}
+
+class ViewMixupError extends StateError {
+  ViewMixupError(String msg) : super(msg);
 }
