@@ -25,12 +25,12 @@ abstract class LauncherController {
     _getId().then((_) => _setupLauncher(externalCssPath));
 
     // Let UpCom know that we are ready for ID.
-    CustomEvent event = new CustomEvent('LauncherReadyForId', canBubble: false, cancelable: false, detail: refName);
+    CustomEvent event = new CustomEvent('TabReadyForId', canBubble: false, cancelable: false, detail: refName);
     window.dispatchEvent(event);
   }
 
   Future _getId() {
-    EventStreamProvider<CustomEvent> LauncherIdStream = new EventStreamProvider<CustomEvent>('LauncherIdEvent');
+    EventStreamProvider<CustomEvent> LauncherIdStream = new EventStreamProvider<CustomEvent>('TabIdEvent');
     return LauncherIdStream.forTarget(window).where((CustomEvent e) {
       Map detail = JSON.decode(e.detail);
       return refName == detail['refName'];
@@ -57,7 +57,7 @@ abstract class LauncherController {
     // Also, this is done last as additional view set up may have been done in setUpController().
     view.tabContent.onFocus.listen((e) => elementToFocus.focus());
 
-    CustomEvent event = new CustomEvent('LauncherSetupComplete', canBubble: false, cancelable: false, detail: refName);
+    CustomEvent event = new CustomEvent('TabSetupComplete', canBubble: false, cancelable: false, detail: refName);
     window.dispatchEvent(event);
 
     return null;
