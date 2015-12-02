@@ -19,7 +19,21 @@ class LauncherView extends ContainerView {
       loadExternalCss(externalCssPath);
     }
 
-    tabHandle.classes.add('launcher-handle');
-    tabHandleButton.text = '$shortName';
+    tabHandle
+      ..id = 'tab-$refName-$id-handle'
+      ..classes.addAll(['tab-control', 'active']);
+
+    tabHandleButton
+      ..id = 'button-$refName-$id'
+      ..href = '#tab-$refName-$id-container'
+      ..dataset['toggle'] = 'tab'
+      ..style.zIndex = '10';
+
+    SpanElement controlGlyph = new SpanElement()
+      ..classes.addAll(['glyphicons', 'glyphicons-plus'])
+      ..style.zIndex = '-1';
+    tabHandleButton.children.add(controlGlyph);
+
+    tabContent.classes.add('launcher-content');
   }
 }

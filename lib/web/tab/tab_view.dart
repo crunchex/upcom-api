@@ -22,11 +22,19 @@ class TabView extends ContainerView {
       loadExternalCss(externalCssPath);
     }
 
-    tabHandleButton.text = '$shortName-$id';
+    tabHandle
+      ..id = 'tab-$refName-$id-handle'
+      ..classes.addAll(['tab-handle', 'active']);
 
-    extra = new LIElement();
-    extra.id = 'extra-$id';
-    extra.classes.add('extra-menubar');
+    tabHandleButton
+      ..id = 'button-$refName-$id'
+      ..href = '#tab-$refName-$id-container'
+      ..dataset['toggle'] = 'tab'
+      ..text = '$shortName-$id';
+
+    extra = new LIElement()
+      ..id = 'extra-$id'
+      ..classes.add('extra-menubar');
     menus.children.add(extra);
 
     closeControlHitbox = new DivElement()

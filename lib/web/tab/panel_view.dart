@@ -19,7 +19,14 @@ class PanelView extends ContainerView {
       loadExternalCss(externalCssPath);
     }
 
-    tabHandle.classes.add('panel-handle');
-    tabHandleButton.text = '$shortName';
+    tabHandle
+      ..id = 'tab-$refName-$id-handle'
+      ..classes.addAll(['tab-handle', 'panel-handle', 'active']);
+
+    tabHandleButton
+      ..id = 'button-$refName-$id'
+      ..href = '#tab-$refName-$id-container'
+      ..dataset['toggle'] = 'tab'
+      ..text = '$shortName';
   }
 }

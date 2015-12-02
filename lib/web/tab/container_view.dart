@@ -98,18 +98,11 @@ abstract class ContainerView {
 
   /// Takes a [num], [col], and [title] to add a new tab for the specified column.
   void _setUpTabHandle(DivElement handles) {
-    tabHandle = new LIElement()
-      ..id = 'tab-$refName-$id-handle'
-      ..classes.add('tab-handle')
-      ..classes.add('active');
-
-    tabHandleButton = new AnchorElement()
-      ..id = 'button-$refName-$id'
-      ..href = '#tab-$refName-$id-container'
-      ..dataset['toggle'] = 'tab';
-    tabHandle.children.add(tabHandleButton);
-
+    tabHandle = new LIElement();
     handles.children.add(tabHandle);
+
+    tabHandleButton = new AnchorElement();
+    tabHandle.children.add(tabHandleButton);
   }
 
   /// Takes a [num], [col], [title], [config], and [active] to generate the
