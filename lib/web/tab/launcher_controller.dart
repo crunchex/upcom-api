@@ -17,6 +17,8 @@ abstract class LauncherController {
   LauncherView view;
   Mailbox mailbox;
 
+  List<StreamSubscription> _listeners;
+
   LauncherController(List<String> names, [String externalCssPath]) {
     refName = names[0];
     fullName = names[1];
@@ -52,10 +54,15 @@ abstract class LauncherController {
     mailbox.registerWebSocketEvent(EventType.ON_MESSAGE, 'UPDATE_COLUMN', _updateColumn);
     registerEventHandlers();
 
+    if (_listeners == null) _listeners = [];
+    _listeners.add(view.tabHandleButton.onClick.listen((e) {
+      // Need to show the tab content before the input field can be focused.
+      new Timer(new Duration(milliseconds: 500), () => elementToFocus.focus());
+    }));
     // When the content of this Launcher receives focus, transfer it to whatever is the main content of the Launcher
     // (which may or may not be the direct child of view.content).
     // Also, this is done last as additional view set up may have been done in setUpController().
-    view.tabContent.onFocus.listen((e) => elementToFocus.focus());
+    _listeners.add(view.tabContent.onFocus.listen((e) => elementToFocus.focus()));
 
     CustomEvent event = new CustomEvent('TabSetupComplete', canBubble: false, cancelable: false, detail: refName);
     window.dispatchEvent(event);
@@ -83,6 +90,10 @@ abstract class LauncherController {
     // Cancel closing if preClose returns false for some reason.
     bool canClose = await preClose();
     if (!canClose) return false;
+
+    for (StreamSubscription sub in _listeners) {
+      sub.cancel();
+    }
 
     view.destroy();
     cleanUp();
