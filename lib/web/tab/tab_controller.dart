@@ -40,7 +40,8 @@ abstract class TabController {
 
   void _setUpTab([List config]) {
     tabHandle = querySelector('#tab-$refName-$id-handle');
-    tabHandleButton = tabHandle.children[0];
+    tabHandleButton = tabHandle.children[(type == PluginType.TAB) ? 1 : 0];
+    print('tab handle button: ${tabHandleButton.id}');
 
     tabContainer = querySelector('#tab-$refName-$id-container');
     tabContent = tabContainer.children[0];
@@ -48,6 +49,7 @@ abstract class TabController {
 
     if (type == PluginType.TAB) {
       closeButton = tabHandle.children.first;
+      print('close button: ${closeButton.id}');
 
       if (config != null) {
         menus = new UListElement()
@@ -121,6 +123,7 @@ abstract class TabController {
     _listeners.add(closeButton.onClick.listen((e) => _closeTab()));
     _listeners.add(tabHandleButton.onContextMenu.listen((e) {
       e.preventDefault();
+      print('click');
       List menu = [
         {'type': 'toggle', 'title': 'Clone', 'handler': _cloneTab},
         {
