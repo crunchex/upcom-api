@@ -4,7 +4,6 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:convert';
 
-import 'container_view.dart';
 import '../mailbox/mailbox.dart';
 //import '../menu/context_menu.dart';
 
