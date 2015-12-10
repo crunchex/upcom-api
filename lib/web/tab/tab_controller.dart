@@ -135,7 +135,7 @@ abstract class TabController {
     }));
   }
 
-  void _cloneTab() => mailbox.ws.send(new Msg('CLONE_TAB', '$refName:$id:$col').toString());
+  void _cloneTab() => mailbox.ws.send(new Msg('CLONE_TAB', '$refName:$col').toString());
   void _moveTabTo(int newCol) => mailbox.ws.send(new Msg('MOVE_TAB', '$refName:$id:$col:$newCol').toString());
 
   Future<bool> _closeTab() async {

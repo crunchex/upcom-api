@@ -57,8 +57,8 @@ abstract class Tab {
   }
 
   void _cloneTab(String msg) {
-    Msg m = new Msg('CLONE_TAB', msg);
-    mailbox.relay(upcomName, -1, m);
+    Msg m = new Msg('REQUEST_TAB', '$refName:$id:$msg');
+    mailbox.relay(Tab.upcomName, -1, m);
   }
 
   void _moveTab(String msg) {
