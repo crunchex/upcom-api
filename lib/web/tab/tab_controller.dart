@@ -8,13 +8,12 @@ import 'package:upcom-api/web/mailbox/mailbox.dart';
 import 'package:upcom-api/web/menu/context_menu.dart';
 import 'package:upcom-api/web/menu/plugin_menu.dart' as PluginMenu;
 
-enum PluginType { TAB, PANEL, LAUNCHER }
+enum PluginType { TAB, PANEL }
 
 abstract class TabController {
   int id, col;
-  bool active;
+  bool active, contextMenuEnabled, closeButtonEnabled;
   String refName, fullName, shortName;
-  PluginType type;
 
   DivElement tabHandle, tabContainer, tabContent, content, closeButton;
   AnchorElement tabHandleButton;
@@ -23,7 +22,7 @@ abstract class TabController {
 
   List<StreamSubscription> _listeners;
 
-  TabController(List<String> names, this.type, [List config]) {
+  TabController(List<String> names, this.contextMenuEnabled, this.closeButtonEnabled, [List config]) {
     refName = names[0];
     fullName = names[1];
     shortName = names[2];
@@ -43,29 +42,31 @@ abstract class TabController {
 
   void _setUpTab([List config]) {
     tabHandle = querySelector('#tab-$refName-$id-handle');
-    tabHandleButton = tabHandle.children[(type == PluginType.TAB) ? 1 : 0];
+
+    if (closeButtonEnabled) {
+      closeButton = tabHandle.children.first;
+      tabHandleButton = tabHandle.children[1];
+    } else {
+      tabHandleButton = tabHandle.children.first;
+    }
 
     tabContainer = querySelector('#tab-$refName-$id-container');
     tabContent = tabContainer.children[0];
     content = tabContent.children[0];
 
-    if (type == PluginType.TAB) {
-      closeButton = tabHandle.children.first;
+    if (config != null) {
+      menus = new UListElement()
+        ..classes.add('nav')
+        ..classes.add('nav-tabs')
+        ..classes.add('inner-tabs')
+        ..attributes['role'] = 'tablist';
 
-      if (config != null) {
-        menus = new UListElement()
-          ..classes.add('nav')
-          ..classes.add('nav-tabs')
-          ..classes.add('inner-tabs')
-          ..attributes['role'] = 'tablist';
-
-        menus.children = new List<Element>();
-        for (Map configItem in config) {
-          menus.children.add(PluginMenu.createDropdownMenu(id, refName, configItem));
-        }
-
-        tabContainer.children.insert(0, menus);
+      menus.children = new List<Element>();
+      for (Map configItem in config) {
+        menus.children.add(PluginMenu.createDropdownMenu(id, refName, configItem));
       }
+
+      tabContainer.children.insert(0, menus);
     }
 
     mailbox = new Mailbox(refName, id);
@@ -120,19 +121,23 @@ abstract class TabController {
     // Also, this is done last as additional view set up may have been done in setUpController().
     _listeners.add(tabContent.onFocus.listen((e) => elementToFocus.focus()));
 
-    if (type != PluginType.TAB) return;
-    _listeners.add(closeButton.onClick.listen((e) => _closeTab()));
-    _listeners.add(tabHandleButton.onContextMenu.listen((e) {
-      e.preventDefault();
-      List menu = [
-        {'type': 'toggle', 'title': 'Clone', 'handler': _cloneTab},
-        {
-           'type': 'toggle',
-           'title': 'Move ${col == 1 ? 'Right' : 'Left'}',
-           'handler': () => _moveTabTo(col == 1 ? 2 : 1)
-        }];
-      ContextMenu.createContextMenu(e.page, menu);
-    }));
+    if (closeButtonEnabled) {
+      _listeners.add(closeButton.onClick.listen((e) => _closeTab()));
+    }
+
+    if (contextMenuEnabled) {
+      _listeners.add(tabHandleButton.onContextMenu.listen((e) {
+        e.preventDefault();
+        List menu = [
+          {'type': 'toggle', 'title': 'Clone', 'handler': _cloneTab},
+          {
+            'type': 'toggle',
+            'title': 'Move ${col == 1 ? 'Right' : 'Left'}',
+            'handler': () => _moveTabTo(col == 1 ? 2 : 1)
+          }];
+        ContextMenu.createContextMenu(e.page, menu);
+      }));
+    }
   }
 
   void _cloneTab() => mailbox.ws.send(new Msg('CLONE_TAB', '$refName:$col').toString());
