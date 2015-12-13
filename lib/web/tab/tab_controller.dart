@@ -14,6 +14,7 @@ abstract class TabController {
   int id, col;
   bool active, contextMenuEnabled, closeButtonEnabled;
   String refName, fullName, shortName;
+  PluginType type;
 
   DivElement tabHandle, tabContainer, tabContent, content, closeButton;
   AnchorElement tabHandleButton;
@@ -41,6 +42,9 @@ abstract class TabController {
   }
 
   void _setUpTab([List config]) {
+    DivElement columnContent = querySelector('#column-$col');
+    type = (columnContent.classes.contains('col-xs-2')) ? PluginType.PANEL : PluginType.TAB;
+
     tabHandle = querySelector('#tab-$refName-$id-handle');
 
     if (closeButtonEnabled) {
