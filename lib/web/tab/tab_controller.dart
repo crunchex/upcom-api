@@ -15,6 +15,7 @@ abstract class TabController {
   bool active, contextMenuEnabled, closeButtonEnabled;
   String refName, fullName, shortName;
   PluginType type;
+  Map refMap;
 
   DivElement tabHandle, tabContainer, tabContent, content, closeButton;
   AnchorElement tabHandleButton;
@@ -69,6 +70,8 @@ abstract class TabController {
   }
 
   void _generateMenu(List config) {
+    if (refMap == null) refMap = {};
+
     menus = new UListElement()
       ..classes.add('nav')
       ..classes.add('nav-tabs')
@@ -78,6 +81,10 @@ abstract class TabController {
     menus.children = new List<Element>();
     for (Map configItem in config) {
       menus.children.add(PluginMenu.createDropdownMenu(id, refName, configItem));
+      if (!configItem.containsKey('items')) {
+        String sanitizedTitle = configItem['title'].toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
+        refMap[configItem['title']] = 'button-$sanitizedTitle';
+      }
     }
 
     tabContainer.children.insert(0, menus);
