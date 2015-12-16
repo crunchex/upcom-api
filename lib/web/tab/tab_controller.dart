@@ -70,8 +70,6 @@ abstract class TabController {
   }
 
   void _generateMenu(List config) {
-    print('generating menu');
-    print('tabContainer id: ${tabContainer.id}');
     if (refMap == null) refMap = {};
 
     menus = new UListElement()
@@ -82,9 +80,9 @@ abstract class TabController {
 
     menus.children = new List<Element>();
     for (Map configItem in config) {
-      menus.children.add(PluginMenu.createDropdownMenu(id, refName, configItem));
-      String sanitizedTitle = configItem['title'].toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
-      refMap[configItem['title']] = 'button-$sanitizedTitle';
+      menus.children.add(PluginMenu.createDropdownMenu(id, refName, configItem, refMap));
+//      String sanitizedTitle = configItem['title'].toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
+//      refMap[configItem['title']] = 'button-$sanitizedTitle';
     }
 
     tabContainer.children.insert(0, menus);

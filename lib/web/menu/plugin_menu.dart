@@ -2,7 +2,7 @@ library upcom_api.lib.web.menu.plugin_menu;
 
 import 'dart:html';
 
-LIElement addMenuItem(int id, String refName, Map itemConfig, [String dropdownMenuSelector]) {
+LIElement addMenuItem(int id, String refName, Map itemConfig, Map refMap, [String dropdownMenuSelector]) {
   String type = itemConfig['type'];
   String title = itemConfig['title'];
   String handler = itemConfig['handler'];
@@ -12,13 +12,13 @@ LIElement addMenuItem(int id, String refName, Map itemConfig, [String dropdownMe
   LIElement itemElement;
   switch (type) {
     case 'toggle':
-      itemElement = createToggleItem(title, handler, args);
+      itemElement = createToggleItem(title, handler, args, refMap);
       break;
     case 'input':
-      itemElement = createInputItem(title);
+      itemElement = createInputItem(title, refMap);
       break;
     case 'submenu':
-      itemElement = createSubMenu(id, refName, title, items);
+      itemElement = createSubMenu(id, refName, title, items, refMap);
       break;
     case 'divider':
       itemElement = createDivider(title);
@@ -33,7 +33,7 @@ LIElement addMenuItem(int id, String refName, Map itemConfig, [String dropdownMe
 }
 
 /// Generates a dropdown menu and returns the new [LIElement].
-LIElement createDropdownMenu(int id, String refName, Map config) {
+LIElement createDropdownMenu(int id, String refName, Map config, Map refMap) {
   String title = config['title'];
   List items = config['items'];
 
@@ -48,6 +48,7 @@ LIElement createDropdownMenu(int id, String refName, Map config) {
     ..dataset['toggle'] = 'dropdown'
     ..text = title;
   dropdown.children.add(dropdownToggle);
+  refMap[title] = dropdownToggle;
 
   UListElement dropdownMenu = new UListElement()
     ..id = '$refName-$id-$sanitizedTitle'
@@ -57,7 +58,7 @@ LIElement createDropdownMenu(int id, String refName, Map config) {
 
   LIElement item;
   for (Map i in items) {
-    item = addMenuItem(id, refName, i);
+    item = addMenuItem(id, refName, i, refMap);
     dropdownMenu.children.add(item);
   }
 
@@ -80,7 +81,7 @@ LIElement createDivider(String title) {
 }
 
 ///Create a submenu within a dropdown
-LIElement createSubMenu(int id, String refName, String title, List<String> items) {
+LIElement createSubMenu(int id, String refName, String title, List<String> items, Map refMap) {
   String sanitizedTitle =
   title.toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
   String sanitizedId = '$refName-$id-$sanitizedTitle';
@@ -91,6 +92,7 @@ LIElement createSubMenu(int id, String refName, String title, List<String> items
     ..href = '#'
     ..text = title;
   item.append(button);
+  refMap[title] = button;
   SpanElement dropdownIndicator = new SpanElement()
     ..classes.addAll(['glyphicons', 'glyphicons-chevron-right']);
   button.children.add(dropdownIndicator);
@@ -106,6 +108,7 @@ LIElement createSubMenu(int id, String refName, String title, List<String> items
       ..href = "#"
       ..text = item
       ..id = "${item.toLowerCase().replaceAll(' ', '-')}-button";
+    refMap[item] = inner;
     menuItem.append(inner);
     dropdown.append(menuItem);
   }
@@ -114,7 +117,7 @@ LIElement createSubMenu(int id, String refName, String title, List<String> items
 
 /// Generates an input item (label and input field) and returns
 /// the new [LIElement].
-LIElement createInputItem(String title) {
+LIElement createInputItem(String title, Map refMap) {
   String name = title.toLowerCase().replaceAll(' ', '-');
 
   LIElement li = new LIElement();
@@ -136,7 +139,7 @@ LIElement createInputItem(String title) {
 }
 
 /// Generates a toggle item (button) and returns the new [LIElement].
-LIElement createToggleItem(String title, onClick, args) {
+LIElement createToggleItem(String title, onClick, args, Map refMap) {
   String sanitizedTitle =
   title.toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
 
@@ -150,6 +153,8 @@ LIElement createToggleItem(String title, onClick, args) {
   if (onClick != null) {
     button.onClick.listen((e) => args != null ? onClick(args) : onClick());
   }
+
+  refMap[title] = button;
 
   buttonList.children.add(button);
 
