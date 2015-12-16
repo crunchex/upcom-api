@@ -62,6 +62,8 @@ abstract class TabController {
   void cleanUp();
   Element get elementToFocus;
 
+  Future<bool> closeTab() => _closeTab();
+
   // Private stuff.
 
   Future _getId() {
