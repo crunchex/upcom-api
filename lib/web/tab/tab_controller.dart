@@ -20,6 +20,7 @@ abstract class TabController {
   DivElement tabHandle, tabContainer, tabContent, content, closeButton;
   AnchorElement tabHandleButton;
   UListElement menus;
+  LIElement extra;
   Mailbox mailbox;
 
   List<StreamSubscription> _listeners;
@@ -86,6 +87,11 @@ abstract class TabController {
 //      String sanitizedTitle = configItem['title'].toLowerCase().replaceAll('.', '').replaceAll(' ', '-');
 //      refMap[configItem['title']] = 'button-$sanitizedTitle';
     }
+
+    extra = new LIElement()
+      ..id = 'extra-$id'
+      ..classes.add('extra-menubar');
+    menus.children.add(extra);
 
     tabContainer.children.insert(0, menus);
   }
