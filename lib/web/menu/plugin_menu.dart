@@ -134,6 +134,7 @@ LIElement createInputItem(String title, Map refMap) {
     ..id = '$name-input'
     ..type = 'text';
   d.children.add(i);
+  refMap[title] = i;
 
   return li;
 }
