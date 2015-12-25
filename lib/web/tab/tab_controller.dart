@@ -137,6 +137,11 @@ abstract class TabController {
     // Also, this is done last as additional view set up may have been done in setUpController().
     _listeners.add(tabContent.onFocus.listen((e) => elementToFocus.focus()));
 
+    _listeners.add(_closePluginButton.onClick.listen((e) {
+      closeTab();
+      e.preventDefault();
+    }));
+
     if (closeButtonEnabled) {
       _listeners.add(closeButton.onClick.listen((e) => _closeTab()));
     }
