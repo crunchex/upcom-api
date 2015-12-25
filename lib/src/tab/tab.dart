@@ -23,15 +23,13 @@ abstract class Tab {
     }
   }
 
-  String refName, fullName, shortName, tabPath;
+  String refName, tabPath;
   int id;
 
   PluginMailbox mailbox;
 
   Tab(List names, SendPort sendPort, List args) {
     refName = names[0];
-    fullName = names[1];
-    shortName = names[2];
 
     tabPath = normalize(args[0]);
     id = args[1];
@@ -51,11 +49,6 @@ abstract class Tab {
   void registerMailbox();
   void cleanup();
 
-  // TODO: Is this used anywhere?
-  void close() {
-    cleanup();
-  }
-
   void _closeTab(String msg) {
     cleanup();
 
@@ -64,8 +57,8 @@ abstract class Tab {
   }
 
   void _cloneTab(String msg) {
-    Msg m = new Msg('CLONE_TAB', msg);
-    mailbox.relay(upcomName, -1, m);
+    Msg m = new Msg('REQUEST_TAB', '$refName:$id:$msg');
+    mailbox.relay(Tab.upcomName, -1, m);
   }
 
   void _moveTab(String msg) {

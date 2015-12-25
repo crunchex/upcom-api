@@ -39,7 +39,7 @@ abstract class Panel {
     mailbox = new PluginMailbox(sendPort, refName, id);
 
     // Register Panel's event handlers.
-    mailbox.registerMessageHandler('CLOSE_PANEL', _closePanel);
+    mailbox.registerMessageHandler('CLOSE_TAB', _closePanel);
     mailbox.registerMessageHandler('UPDATE_COLUMN', _updateColumn);
 
     // Register subclass' event handlers.
